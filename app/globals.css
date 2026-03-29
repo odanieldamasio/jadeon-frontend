@@ -1,0 +1,56 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: 150 25% 97%;
+  --foreground: 160 28% 14%;
+  --card: 0 0% 100%;
+  --card-foreground: 160 25% 16%;
+  --border: 154 21% 85%;
+  --input: 154 21% 85%;
+  --primary: 164 71% 29%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 46 65% 92%;
+  --secondary-foreground: 25 38% 24%;
+  --muted: 155 20% 93%;
+  --muted-foreground: 160 10% 40%;
+  --accent: 38 96% 61%;
+  --accent-foreground: 24 38% 18%;
+  --success: 149 70% 34%;
+  --danger: 0 72% 52%;
+}
+
+* {
+  @apply border-border;
+}
+
+body {
+  @apply min-h-screen bg-background text-foreground antialiased;
+  background-image:
+    radial-gradient(circle at 0% 0%, rgba(56, 189, 151, 0.2), transparent 35%),
+    radial-gradient(circle at 100% 0%, rgba(251, 191, 36, 0.18), transparent 30%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.45), rgba(255, 255, 255, 0.88));
+}
+
+@layer components {
+  .glass-panel {
+    @apply rounded-2xl border bg-card/85 shadow-soft backdrop-blur;
+  }
+
+  .page-enter {
+    animation: fade-up 0.45s ease-out both;
+  }
+}
+
+@keyframes fade-up {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
