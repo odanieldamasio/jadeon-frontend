@@ -53,7 +53,7 @@ export default function CategoriesPage() {
       setFormOpen(false);
       setSelectedCategory(null);
     } catch (error) {
-      setFormError(getErrorMessage(error, 'Nao foi possivel salvar a categoria.'));
+      setFormError(getErrorMessage(error, 'Não foi possível salvar a categoria.'));
     }
   };
 
@@ -67,15 +67,15 @@ export default function CategoriesPage() {
     try {
       await deleteMutation.mutateAsync(category.id);
     } catch {
-      window.alert('Nao foi possivel remover esta categoria.');
+      window.alert('Não foi possível remover esta categoria.');
     }
   };
 
   return (
-    <section className="space-y-4">
+    <section className="space-y-5">
       <header className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold">Categorias</h1>
+          <h1 className="text-2xl font-bold text-foreground">Categorias</h1>
           <p className="text-sm text-muted-foreground">Organize seu plano de contas com regras claras.</p>
         </div>
 
@@ -85,9 +85,11 @@ export default function CategoriesPage() {
         </Button>
       </header>
 
-      {formError ? <p className="rounded-md bg-danger/10 px-3 py-2 text-sm text-danger">{formError}</p> : null}
+      {formError ? (
+        <p className="rounded-[4px] border border-danger/25 bg-card px-3 py-2 text-sm text-danger">{formError}</p>
+      ) : null}
 
-      <Card>
+      <Card className="overflow-hidden">
         <CardHeader>
           <CardTitle>Lista de categorias</CardTitle>
         </CardHeader>
@@ -99,19 +101,19 @@ export default function CategoriesPage() {
               <Skeleton className="h-24" />
             </div>
           ) : categoriesQuery.isError ? (
-            <p className="text-sm text-danger">Nao foi possivel carregar as categorias.</p>
+            <p className="text-sm text-danger">Não foi possível carregar as categorias.</p>
           ) : categoriesQuery.data?.length ? (
             <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
               {categoriesQuery.data.map((category) => (
-                <article key={category.id} className="rounded-lg border border-border/80 p-4">
+                <article key={category.id} className="rounded-[4px] border border-border bg-card p-4">
                   <div className="mb-3 flex items-center gap-2">
                     <span
                       className="h-3 w-3 rounded-full"
                       style={{ backgroundColor: category.color }}
                     />
-                    <h2 className="font-semibold">{category.name}</h2>
+                    <h2 className="font-semibold text-foreground">{category.name}</h2>
                   </div>
-                  <p className="mb-3 text-xs text-muted-foreground">Icone: {category.icon}</p>
+                  <p className="mb-3 text-xs text-muted-foreground">Ícone: {category.icon}</p>
                   <div className="flex gap-2">
                     <Button variant="outline" size="sm" onClick={() => handleEdit(category)}>
                       <Pencil className="mr-1 h-4 w-4" />

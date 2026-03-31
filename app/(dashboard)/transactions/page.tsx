@@ -1,7 +1,8 @@
 'use client';
 
 import { Plus } from 'lucide-react';
-import { useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { TransactionForm } from '@/components/transactions/transaction-form';
 import { TransactionTable } from '@/components/transactions/transaction-table';
 import { Button } from '@/components/ui/button';
@@ -38,7 +39,13 @@ const initialFilters: FiltersState = {
   limit: 10
 };
 
+const CREATE_MODAL_QUERY_KEY = 'modal';
+const CREATE_MODAL_QUERY_VALUE = 'nova';
+
 export default function TransactionsPage() {
+  const pathname = usePathname();
+  const router = useRouter();
+  const searchParams = useSearchParams();
   const [filters, setFilters] = useState<FiltersState>(initialFilters);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingTransaction, setEditingTransaction] = useState<Transaction | null>(null);
@@ -66,6 +73,48 @@ export default function TransactionsPage() {
   const canCreate = categories.length > 0;
   const showNoCategoriesWarning = categoriesQuery.isSuccess && !canCreate;
 
+  const replaceSearchParams = useCallback(
+    (params: URLSearchParams) => {
+      const query = params.toString();
+      router.replace(query ? `${pathname}?${query}` : pathname, { scroll: false });
+    },
+    [pathname, router]
+  );
+
+  const openCreateModalInRoute = useCallback(() => {
+    const params = new URLSearchParams(searchParams.toString());
+
+    if (params.get(CREATE_MODAL_QUERY_KEY) === CREATE_MODAL_QUERY_VALUE) {
+      return;
+    }
+
+    params.set(CREATE_MODAL_QUERY_KEY, CREATE_MODAL_QUERY_VALUE);
+    replaceSearchParams(params);
+  }, [replaceSearchParams, searchParams]);
+
+  const clearCreateModalInRoute = useCallback(() => {
+    const params = new URLSearchParams(searchParams.toString());
+
+    if (params.get(CREATE_MODAL_QUERY_KEY) !== CREATE_MODAL_QUERY_VALUE) {
+      return;
+    }
+
+    params.delete(CREATE_MODAL_QUERY_KEY);
+    replaceSearchParams(params);
+  }, [replaceSearchParams, searchParams]);
+
+  useEffect(() => {
+    if (!canCreate) {
+      return;
+    }
+
+    if (searchParams.get(CREATE_MODAL_QUERY_KEY) === CREATE_MODAL_QUERY_VALUE) {
+      setEditingTransaction(null);
+      setFormError(null);
+      setIsFormOpen(true);
+    }
+  }, [canCreate, searchParams]);
+
   const updateFilter = <K extends keyof FiltersState>(key: K, value: FiltersState[K]) => {
     setFilters((current) => ({
       ...current,
@@ -78,12 +127,23 @@ export default function TransactionsPage() {
     setEditingTransaction(null);
     setFormError(null);
     setIsFormOpen(true);
+    openCreateModalInRoute();
   };
 
   const handleEdit = (transaction: Transaction) => {
     setEditingTransaction(transaction);
     setFormError(null);
     setIsFormOpen(true);
+    clearCreateModalInRoute();
+  };
+
+  const handleFormOpenChange = (open: boolean) => {
+    setIsFormOpen(open);
+
+    if (!open) {
+      setEditingTransaction(null);
+      clearCreateModalInRoute();
+    }
   };
 
   const handleSubmit = async (payload: CreateTransactionPayload) => {
@@ -101,13 +161,14 @@ export default function TransactionsPage() {
 
       setIsFormOpen(false);
       setEditingTransaction(null);
+      clearCreateModalInRoute();
     } catch (error) {
-      setFormError(getErrorMessage(error, 'Nao foi possivel salvar a transacao.'));
+      setFormError(getErrorMessage(error, 'Não foi possível salvar a transação.'));
     }
   };
 
   const handleDelete = async (transaction: Transaction) => {
-    const confirmed = window.confirm(`Excluir transacao "${transaction.description}"?`);
+    const confirmed = window.confirm(`Excluir transação "${transaction.description}"?`);
 
     if (!confirmed) {
       return;
@@ -116,31 +177,31 @@ export default function TransactionsPage() {
     try {
       await deleteMutation.mutateAsync(transaction.id);
     } catch {
-      window.alert('Nao foi possivel excluir esta transacao.');
+      window.alert('Não foi possível excluir esta transação.');
     }
   };
 
   return (
-    <section className="space-y-4">
+    <section className="space-y-5">
       <header className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold">Transacoes</h1>
-          <p className="text-sm text-muted-foreground">Gerencie entradas e saidas com filtros e edicao rapida.</p>
+          <h1 className="text-2xl font-bold text-foreground">Transações</h1>
+          <p className="text-sm text-muted-foreground">Gerencie entradas e saídas com filtros e edição rápida.</p>
         </div>
 
         <Button onClick={handleOpenCreate} disabled={!canCreate}>
           <Plus className="mr-1 h-4 w-4" />
-          Nova transacao
+          Nova transação
         </Button>
       </header>
 
       {showNoCategoriesWarning ? (
-        <div className="rounded-lg border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-900">
-          Crie ao menos uma categoria antes de registrar transacoes.
+        <div className="rounded-[4px] border border-amber-500/35 bg-card px-4 py-3 text-sm text-amber-300">
+          Crie ao menos uma categoria antes de registrar transações.
         </div>
       ) : null}
 
-      <Card>
+      <Card className="overflow-hidden">
         <CardHeader>
           <CardTitle>Filtros</CardTitle>
         </CardHeader>
@@ -151,7 +212,7 @@ export default function TransactionsPage() {
             placeholder="Tipo"
           >
             <option value="INCOME">Entrada</option>
-            <option value="EXPENSE">Saida</option>
+            <option value="EXPENSE">Saída</option>
           </Select>
 
           <Select
@@ -184,9 +245,11 @@ export default function TransactionsPage() {
         </CardContent>
       </Card>
 
-      {formError ? <p className="rounded-md bg-danger/10 px-3 py-2 text-sm text-danger">{formError}</p> : null}
+      {formError ? (
+        <p className="rounded-[4px] border border-danger/25 bg-card px-3 py-2 text-sm text-danger">{formError}</p>
+      ) : null}
 
-      <Card>
+      <Card className="overflow-hidden">
         <CardHeader>
           <CardTitle>Lista</CardTitle>
         </CardHeader>
@@ -198,7 +261,7 @@ export default function TransactionsPage() {
               <Skeleton className="h-12" />
             </div>
           ) : transactionsQuery.isError ? (
-            <p className="text-sm text-danger">Nao foi possivel carregar as transacoes.</p>
+            <p className="text-sm text-danger">Não foi possível carregar as transações.</p>
           ) : (
             <>
               <TransactionTable
@@ -209,9 +272,9 @@ export default function TransactionsPage() {
                 deletingId={deleteMutation.isPending ? deleteMutation.variables : null}
               />
 
-              <div className="flex items-center justify-between">
+              <div className="flex items-center justify-between border-t border-border/80 pt-4">
                 <p className="text-sm text-muted-foreground">
-                  Pagina {transactionsQuery.data?.page || 1} de {totalPages}
+                  Página {transactionsQuery.data?.page || 1} de {totalPages}
                 </p>
 
                 <div className="flex gap-2">
@@ -229,7 +292,7 @@ export default function TransactionsPage() {
                     disabled={filters.page >= totalPages}
                     onClick={() => updateFilter('page', Math.min(filters.page + 1, totalPages))}
                   >
-                    Proxima
+                    Próxima
                   </Button>
                 </div>
               </div>
@@ -241,7 +304,7 @@ export default function TransactionsPage() {
       {canCreate ? (
         <TransactionForm
           open={isFormOpen}
-          onOpenChange={setIsFormOpen}
+          onOpenChange={handleFormOpenChange}
           transaction={editingTransaction}
           categories={categories}
           isPending={isSubmitting}

@@ -10,9 +10,9 @@ import { useAuthStore } from '@/store/auth.store';
 
 const mobileNavigation = [
   { href: '/dashboard', label: 'Dashboard' },
-  { href: '/transactions', label: 'Transacoes' },
+  { href: '/transactions', label: 'Transações' },
   { href: '/categories', label: 'Categorias' },
-  { href: '/settings', label: 'Configuracoes' }
+  { href: '/settings', label: 'Configurações' }
 ];
 
 export default function DashboardLayout({
@@ -41,8 +41,8 @@ export default function DashboardLayout({
 
   if (!hydrated || isRestoring) {
     return (
-      <main className="flex min-h-screen items-center justify-center">
-        <div className="glass-panel px-8 py-6 text-sm text-muted-foreground">Restaurando sessao...</div>
+      <main className="flex min-h-screen items-center justify-center bg-background px-4">
+        <div className="surface-panel px-8 py-6 text-sm text-muted-foreground">Restaurando sessão...</div>
       </main>
     );
   }
@@ -52,15 +52,15 @@ export default function DashboardLayout({
   }
 
   return (
-    <div className="min-h-screen lg:grid lg:grid-cols-[250px_1fr]">
+    <div className="min-h-screen text-foreground lg:grid lg:grid-cols-[268px_1fr]">
       <div className="hidden lg:block">
         <Sidebar />
       </div>
 
-      <div className="min-h-screen">
+      <div className="relative min-h-screen">
         <Header />
 
-        <nav className="flex gap-2 overflow-x-auto border-b border-border/70 bg-card/40 px-4 py-2 lg:hidden">
+        <nav className="relative z-10 flex gap-2 overflow-x-auto border-b border-border bg-card px-4 py-2 lg:hidden">
           {mobileNavigation.map((item) => {
             const isActive = pathname === item.href || pathname.startsWith(`${item.href}/`);
 
@@ -69,8 +69,10 @@ export default function DashboardLayout({
                 key={item.href}
                 href={item.href}
                 className={cn(
-                  'rounded-md px-3 py-1.5 text-sm font-medium',
-                  isActive ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground'
+                  'rounded-[4px] border px-3 py-1.5 text-sm font-medium transition-all duration-200 ease-premium',
+                  isActive
+                    ? 'border-primary/40 bg-primary/20 text-foreground'
+                    : 'border-transparent bg-card text-muted-foreground hover:border-border hover:text-foreground'
                 )}
               >
                 {item.label}
@@ -79,7 +81,7 @@ export default function DashboardLayout({
           })}
         </nav>
 
-        <main className="container py-6">{children}</main>
+        <main className="container relative z-10 py-6 sm:py-8">{children}</main>
       </div>
     </div>
   );

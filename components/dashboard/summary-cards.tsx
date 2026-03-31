@@ -1,6 +1,7 @@
+'use client';
+
 import { TrendingDown, TrendingUp, WalletCards } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
-import { cn } from '@/lib/utils';
 import { formatCurrency } from '@/lib/utils/finance';
 
 interface SummaryCardsProps {
@@ -14,21 +15,21 @@ const summaryConfig = [
     key: 'current-balance',
     title: 'Saldo Atual',
     icon: WalletCards,
-    iconClassName: 'bg-primary/12 text-primary',
+    iconClassName: 'border-primary/30 bg-primary/15 text-primary',
     valueClassName: 'text-foreground'
   },
   {
     key: 'month-income',
-    title: 'Entradas no Mes',
+    title: 'Entradas no Mês',
     icon: TrendingUp,
-    iconClassName: 'bg-success/12 text-success',
+    iconClassName: 'border-success/30 bg-success/15 text-success',
     valueClassName: 'text-success'
   },
   {
     key: 'month-expense',
-    title: 'Saidas no Mes',
+    title: 'Saídas no Mês',
     icon: TrendingDown,
-    iconClassName: 'bg-danger/12 text-danger',
+    iconClassName: 'border-danger/30 bg-danger/15 text-danger',
     valueClassName: 'text-danger'
   }
 ] as const;
@@ -41,27 +42,20 @@ export function SummaryCards({ currentBalance, monthIncome, monthExpense }: Summ
       {summaryConfig.map((item, index) => {
         const Icon = item.icon;
         return (
-          <Card
-            key={item.key}
-            className={cn(
-              'rounded-lg border border-border/80 bg-card p-0 shadow-none page-enter',
-              index === 1 ? '[animation-delay:70ms]' : '',
-              index === 2 ? '[animation-delay:120ms]' : ''
-            )}
-          >
-            <CardContent className="flex items-center gap-3 p-4">
+          <Card key={item.key} className="p-0">
+            <CardContent className="flex items-center gap-4 p-4 sm:p-5">
               <span
-                className={cn(
-                  'inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-md border border-border/70',
+                className={
+                  'inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-[4px] border ' +
                   item.iconClassName
-                )}
+                }
               >
-                <Icon className="h-4 w-4" />
+                <Icon className="h-[18px] w-[18px]" />
               </span>
 
-              <div className="space-y-0.5">
-                <p className="text-sm font-medium text-muted-foreground">{item.title}</p>
-                <p className={cn('text-[1.75rem] font-bold leading-none', item.valueClassName)}>
+              <div className="space-y-1">
+                <p className="text-[11px] font-semibold uppercase tracking-[0.1em] text-muted-foreground">{item.title}</p>
+                <p className={'text-[1.78rem] font-bold leading-none tracking-tight ' + item.valueClassName}>
                   {formatCurrency(values[index])}
                 </p>
               </div>

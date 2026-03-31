@@ -2,8 +2,8 @@ import axios from 'axios';
 import Cookies from 'js-cookie';
 import type { AuthResponse } from '@/types';
 
-const REFRESH_TOKEN_KEY = 'kontavo_refresh_token';
-const USER_ID_KEY = 'kontavo_user_id';
+const REFRESH_TOKEN_KEY = 'jadeon_refresh_token';
+const USER_ID_KEY = 'jadeon_user_id';
 const COOKIE_DAYS = 14;
 
 function getCookieOptions() {

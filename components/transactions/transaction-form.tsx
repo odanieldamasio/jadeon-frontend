@@ -20,9 +20,9 @@ import type { Category, CreateTransactionPayload, Transaction } from '@/types';
 const schema = z.object({
   type: z.enum(['INCOME', 'EXPENSE']),
   amount: z.coerce.number().positive('Valor deve ser maior que zero'),
-  description: z.string().trim().min(2, 'Descricao obrigatoria'),
-  date: z.string().min(1, 'Data obrigatoria'),
-  categoryId: z.string().min(1, 'Categoria obrigatoria')
+  description: z.string().trim().min(2, 'Descrição obrigatória'),
+  date: z.string().min(1, 'Data obrigatória'),
+  categoryId: z.string().min(1, 'Categoria obrigatória')
 });
 
 type FormValues = {
@@ -85,7 +85,7 @@ export function TransactionForm({
     }));
   }, [open, transaction, firstCategoryId]);
 
-  const title = useMemo(() => (transaction ? 'Editar Transacao' : 'Nova Transacao'), [transaction]);
+  const title = useMemo(() => (transaction ? 'Editar transação' : 'Nova transação'), [transaction]);
 
   const updateField = <K extends keyof FormValues>(field: K, value: FormValues[K]) => {
     setValues((current) => ({ ...current, [field]: value }));
@@ -124,7 +124,7 @@ export function TransactionForm({
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
           <DialogDescription>
-            Preencha os dados para registrar sua movimentacao financeira.
+            Preencha os dados para registrar sua movimentação financeira.
           </DialogDescription>
         </DialogHeader>
 
@@ -136,7 +136,7 @@ export function TransactionForm({
               value={values.type}
               onChange={(event) => updateField('type', event.target.value as 'INCOME' | 'EXPENSE')}
             >
-              <option value="EXPENSE">Saida</option>
+              <option value="EXPENSE">Saída</option>
               <option value="INCOME">Entrada</option>
             </Select>
             {errors.type ? <p className="text-xs text-danger">{errors.type}</p> : null}
@@ -155,7 +155,7 @@ export function TransactionForm({
           </div>
 
           <div className="grid gap-2">
-            <Label htmlFor="description">Descricao</Label>
+            <Label htmlFor="description">Descrição</Label>
             <Input
               id="description"
               value={values.description}

@@ -27,18 +27,18 @@ export function TransactionTable({
       <TableHeader>
         <TableRow>
           <TableHead>Tipo</TableHead>
-          <TableHead>Descricao</TableHead>
+          <TableHead>Descrição</TableHead>
           <TableHead>Categoria</TableHead>
           <TableHead>Data</TableHead>
-          <TableHead>Valor</TableHead>
-          <TableHead className="text-right">Acoes</TableHead>
+          <TableHead className="text-right">Valor</TableHead>
+          <TableHead className="text-right">Ações</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
         {transactions.length === 0 ? (
           <TableRow>
             <TableCell colSpan={6} className="py-8 text-center text-muted-foreground">
-              Nenhuma transacao encontrada.
+              Nenhuma transação encontrada.
             </TableCell>
           </TableRow>
         ) : (
@@ -50,12 +50,12 @@ export function TransactionTable({
               <TableRow key={transaction.id}>
                 <TableCell>
                   <Badge variant={isExpense ? 'danger' : 'success'}>
-                    {isExpense ? 'Saida' : 'Entrada'}
+                    {isExpense ? 'Saída' : 'Entrada'}
                   </Badge>
                 </TableCell>
                 <TableCell className="font-medium">{transaction.description}</TableCell>
                 <TableCell>
-                  <span className="inline-flex items-center gap-2">
+                  <span className="inline-flex items-center gap-2 text-sm">
                     <span
                       className="h-2.5 w-2.5 rounded-full"
                       style={{ backgroundColor: category?.color || '#94a3b8' }}
@@ -64,17 +64,17 @@ export function TransactionTable({
                   </span>
                 </TableCell>
                 <TableCell>{formatDate(transaction.date)}</TableCell>
-                <TableCell className={isExpense ? 'text-danger' : 'text-success'}>
+                <TableCell className={isExpense ? 'text-right font-semibold text-danger' : 'text-right font-semibold text-success'}>
                   {formatCurrency(parseAmount(transaction.amount))}
                 </TableCell>
                 <TableCell>
                   <div className="flex justify-end gap-2">
-                    <Button variant="outline" size="sm" onClick={() => onEdit(transaction)}>
+                    <Button variant="outline" size="icon" onClick={() => onEdit(transaction)}>
                       <Pencil className="h-4 w-4" />
                     </Button>
                     <Button
                       variant="danger"
-                      size="sm"
+                      size="icon"
                       disabled={deletingId === transaction.id}
                       onClick={() => onDelete(transaction)}
                     >

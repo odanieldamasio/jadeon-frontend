@@ -2,19 +2,22 @@ import * as React from 'react';
 import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '@/lib/utils';
 
-const badgeVariants = cva('inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold', {
+const badgeVariants = cva(
+  'inline-flex items-center rounded-[4px] border px-2.5 py-0.5 text-xs font-semibold transition-colors',
+  {
   variants: {
     variant: {
-      default: 'bg-secondary text-secondary-foreground',
-      success: 'bg-success/15 text-success',
-      danger: 'bg-danger/15 text-danger',
-      outline: 'border border-input text-foreground'
+      default: 'border-transparent bg-secondary text-secondary-foreground',
+      success: 'border-success/40 bg-card text-success',
+      danger: 'border-danger/40 bg-card text-danger',
+      outline: 'border-input bg-card text-muted-foreground'
     }
   },
   defaultVariants: {
     variant: 'default'
   }
-});
+}
+);
 
 interface BadgeProps extends React.HTMLAttributes<HTMLDivElement>, VariantProps<typeof badgeVariants> {}
 

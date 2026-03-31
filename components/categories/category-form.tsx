@@ -16,9 +16,9 @@ import { Label } from '@/components/ui/label';
 import type { Category, CreateCategoryPayload } from '@/types';
 
 const schema = z.object({
-  name: z.string().trim().min(2, 'Nome obrigatorio'),
-  color: z.string().regex(/^#[A-Fa-f0-9]{6}$/, 'Cor invalida (ex: #22C55E)'),
-  icon: z.string().trim().min(2, 'Icone obrigatorio')
+  name: z.string().trim().min(2, 'Nome obrigatório'),
+  color: z.string().regex(/^#[A-Fa-f0-9]{6}$/, 'Cor inválida (ex.: #22C55E)'),
+  icon: z.string().trim().min(2, 'Ícone obrigatório')
 });
 
 interface CategoryFormProps {
@@ -62,7 +62,7 @@ export function CategoryForm({
     setValues(initialValues);
   }, [open, category]);
 
-  const title = category ? 'Editar Categoria' : 'Nova Categoria';
+  const title = category ? 'Editar categoria' : 'Nova categoria';
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -119,7 +119,7 @@ export function CategoryForm({
             </div>
 
             <div className="grid gap-2">
-              <Label htmlFor="icon">Icone</Label>
+              <Label htmlFor="icon">Ícone</Label>
               <Input
                 id="icon"
                 value={values.icon}

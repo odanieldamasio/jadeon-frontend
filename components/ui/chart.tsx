@@ -86,7 +86,7 @@ const ChartContainer = React.forwardRef<HTMLDivElement, ChartContainerProps>(
           ref={ref}
           data-chart={chartId}
           className={cn(
-            'h-full w-full text-xs [&_.recharts-cartesian-grid_line]:stroke-border/70 [&_.recharts-legend-item-text]:text-muted-foreground [&_.recharts-text]:fill-muted-foreground',
+            'h-full w-full text-xs [&_.recharts-cartesian-axis-tick_text]:fill-muted-foreground [&_.recharts-cartesian-grid_line]:stroke-border/75 [&_.recharts-legend-item-text]:text-muted-foreground [&_.recharts-surface]:outline-none [&_.recharts-text]:fill-muted-foreground',
             className
           )}
           {...props}
@@ -147,11 +147,16 @@ const ChartTooltipContent = React.forwardRef<HTMLDivElement, ChartTooltipContent
     return (
       <div
         ref={ref}
-        className={cn('min-w-[160px] rounded-lg border border-border bg-card px-3 py-2 text-xs shadow-sm', className)}
+        className={cn(
+          'min-w-[168px] rounded-[4px] border border-border bg-card px-3.5 py-2.5 text-xs shadow-soft-xl',
+          className
+        )}
         {...props}
       >
         {!hideLabel && renderedLabel ? (
-          <p className="mb-2 text-[11px] font-medium uppercase tracking-wide text-muted-foreground">{renderedLabel}</p>
+          <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">
+            {renderedLabel}
+          </p>
         ) : null}
 
         <div className="space-y-1.5">
@@ -213,7 +218,12 @@ function ChartLegendContent({ payload, className, nameKey, hideIcon = false }: C
   }
 
   return (
-    <div className={cn('flex flex-wrap items-center justify-center gap-4 pt-2 text-xs', className)}>
+    <div
+      className={cn(
+        'flex flex-wrap items-center justify-center gap-4 pt-3 text-xs font-medium text-muted-foreground',
+        className
+      )}
+    >
       {payload.map((item, index) => {
         const key = String(item.dataKey ?? item.value ?? index);
         const configKey = nameKey ? String((item.payload as Record<string, unknown> | undefined)?.[nameKey] ?? key) : key;

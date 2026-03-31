@@ -13,7 +13,7 @@ const navigation = [
   },
   {
     href: '/transactions',
-    label: 'Transacoes',
+    label: 'Transações',
     icon: Wallet
   },
   {
@@ -23,7 +23,7 @@ const navigation = [
   },
   {
     href: '/settings',
-    label: 'Configuracoes',
+    label: 'Configurações',
     icon: Settings
   }
 ];
@@ -32,14 +32,14 @@ export function Sidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="flex h-full flex-col border-r border-border/80 bg-card/90 p-5 backdrop-blur">
+    <aside className="sticky top-0 flex h-screen flex-col border-r border-border bg-card p-5">
       <div className="mb-8 flex items-center gap-3">
-        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary text-primary-foreground">
+        <div className="flex h-11 w-11 items-center justify-center rounded-[4px] border border-primary/40 bg-primary text-primary-foreground">
           <BarChart3 className="h-5 w-5" />
         </div>
         <div>
-          <p className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">Kontavo</p>
-          <h1 className="text-lg font-bold">Finance OS</h1>
+          <p className="text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">Jadeon</p>
+          <h1 className="text-lg font-bold tracking-tight text-foreground">MEI Console</h1>
         </div>
       </div>
 
@@ -54,10 +54,10 @@ export function Sidebar() {
               key={item.href}
               href={item.href}
               className={cn(
-                'group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors',
+                'group flex items-center gap-3 rounded-[4px] border px-3 py-2.5 text-sm font-medium transition-all duration-200 ease-premium',
                 isActive
-                  ? 'bg-primary text-primary-foreground'
-                  : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+                  ? 'border-primary/40 bg-primary/20 text-foreground'
+                  : 'border-transparent text-muted-foreground hover:border-border hover:bg-muted hover:text-foreground'
               )}
             >
               <Icon className="h-4 w-4" />

@@ -9,8 +9,8 @@ import { useCreateCheckout, useCreatePortal, useUserProfile } from '@/lib/hooks/
 import { getErrorMessage } from '@/lib/utils/error';
 
 const planLabel: Record<string, string> = {
-  FREE: 'Free',
-  ESSENTIAL: 'Essential',
+  FREE: 'Grátis',
+  ESSENTIAL: 'Essencial',
   PREMIUM: 'Premium'
 };
 
@@ -28,7 +28,7 @@ export default function SettingsPage() {
       const response = await checkoutMutation.mutateAsync(planType);
       window.location.href = response.url;
     } catch (error) {
-      setBillingError(getErrorMessage(error, 'Nao foi possivel iniciar checkout.'));
+      setBillingError(getErrorMessage(error, 'Não foi possível iniciar o checkout.'));
     }
   };
 
@@ -39,7 +39,7 @@ export default function SettingsPage() {
       const response = await portalMutation.mutateAsync();
       window.location.href = response.url;
     } catch (error) {
-      setBillingError(getErrorMessage(error, 'Nao foi possivel abrir portal de assinatura.'));
+      setBillingError(getErrorMessage(error, 'Não foi possível abrir o portal de assinatura.'));
     }
   };
 
@@ -53,21 +53,21 @@ export default function SettingsPage() {
   }
 
   if (userQuery.isError || !userQuery.data) {
-    return <div className="glass-panel p-6 text-danger">Nao foi possivel carregar suas configuracoes.</div>;
+    return <div className="surface-panel p-6 text-danger">Não foi possível carregar suas configurações.</div>;
   }
 
   return (
-    <section className="space-y-4">
+    <section className="space-y-5">
       <header>
-        <h1 className="text-2xl font-bold">Configuracoes</h1>
+        <h1 className="text-2xl font-bold text-foreground">Configurações</h1>
         <p className="text-sm text-muted-foreground">Ajuste perfil e assinatura da sua conta.</p>
       </header>
 
-      <Card>
+      <Card className="overflow-hidden">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <UserRound className="h-4 w-4" />
-            Dados do usuario
+            Dados do usuário
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-2 text-sm">
@@ -78,7 +78,7 @@ export default function SettingsPage() {
             <span className="text-muted-foreground">E-mail:</span> {userQuery.data.email}
           </p>
           <p>
-            <span className="text-muted-foreground">Telefone:</span> {userQuery.data.phone || 'Nao informado'}
+            <span className="text-muted-foreground">Telefone:</span> {userQuery.data.phone || 'Não informado'}
           </p>
           <p>
             <span className="text-muted-foreground">Plano atual:</span> {planLabel[userQuery.data.planType]}
@@ -86,11 +86,11 @@ export default function SettingsPage() {
         </CardContent>
       </Card>
 
-      <Card>
+      <Card className="overflow-hidden">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <CreditCard className="h-4 w-4" />
-            Plano e cobranca
+            Plano e cobrança
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-3">
@@ -100,14 +100,14 @@ export default function SettingsPage() {
               onClick={() => handleCheckout('ESSENTIAL')}
               disabled={checkoutMutation.isPending}
             >
-              Upgrade Essential
+              Assinar Essencial
             </Button>
             <Button
               variant="outline"
               onClick={() => handleCheckout('PREMIUM')}
               disabled={checkoutMutation.isPending}
             >
-              Upgrade Premium
+              Assinar Premium
             </Button>
             <Button variant="default" onClick={handlePortal} disabled={portalMutation.isPending}>
               <ExternalLink className="mr-1 h-4 w-4" />
@@ -115,7 +115,9 @@ export default function SettingsPage() {
             </Button>
           </div>
 
-          {billingError ? <p className="text-sm text-danger">{billingError}</p> : null}
+          {billingError ? (
+            <p className="rounded-[4px] border border-danger/25 bg-card px-3 py-2 text-sm text-danger">{billingError}</p>
+          ) : null}
         </CardContent>
       </Card>
     </section>

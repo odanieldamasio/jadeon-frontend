@@ -1,6 +1,6 @@
 'use client';
 
-import { Bar, BarChart, CartesianGrid, Pie, PieChart, XAxis, YAxis } from 'recharts';
+import { CartesianGrid, Line, LineChart, Pie, PieChart, XAxis, YAxis } from 'recharts';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
   ChartContainer,
@@ -20,10 +20,10 @@ interface ChartsProps {
 const chartConfig = {
   income: {
     label: 'Entradas',
-    color: '#0f766e'
+    color: '#22c55e'
   },
   expense: {
-    label: 'Saidas',
+    label: 'Saídas',
     color: '#ef4444'
   }
 } satisfies ChartConfig;
@@ -31,11 +31,11 @@ const chartConfig = {
 const donutConfig = {
   income: {
     label: 'Entradas',
-    color: '#14b8a6'
+    color: '#22c55e'
   },
   expense: {
-    label: 'Saidas',
-    color: '#f87171'
+    label: 'Saídas',
+    color: '#ef4444'
   }
 } satisfies ChartConfig;
 
@@ -59,73 +59,99 @@ export function Charts({ summary }: ChartsProps) {
 
   return (
     <section className="grid gap-4 lg:grid-cols-5">
-      <Card className="lg:col-span-3 rounded-lg border border-border/80 bg-card p-0 shadow-none">
-        <CardHeader className="mb-0 border-b border-border/70 px-5 py-4">
-          <CardTitle className="text-sm font-semibold text-foreground">Evolucao do Mes</CardTitle>
-        </CardHeader>
-        <CardContent className="h-[260px] p-4">
-          {hasSeriesData ? (
-            <ChartContainer config={chartConfig} className="h-full">
-              <BarChart data={summary.monthlySeries} barGap={8} margin={{ top: 4, right: 8, left: -8, bottom: 0 }}>
-                <CartesianGrid vertical={false} strokeDasharray="3 3" />
-                <XAxis dataKey="day" tickLine={false} axisLine={false} tickMargin={8} />
-                <YAxis
-                  tickLine={false}
-                  axisLine={false}
-                  tickMargin={8}
-                  width={72}
-                  tickFormatter={(value) => formatCurrency(Number(value))}
-                />
-                <ChartTooltip
-                  cursor={{ fill: 'rgba(148, 163, 184, 0.15)' }}
-                  content={<ChartTooltipContent valueFormatter={(value) => formatCurrency(Number(value))} />}
-                />
-                <ChartLegend content={<ChartLegendContent />} />
-                <Bar dataKey="income" fill="var(--color-income)" radius={[5, 5, 0, 0]} maxBarSize={26} />
-                <Bar dataKey="expense" fill="var(--color-expense)" radius={[5, 5, 0, 0]} maxBarSize={26} />
-              </BarChart>
-            </ChartContainer>
-          ) : (
-            <div className="flex h-full items-center justify-center rounded-lg border border-dashed border-border bg-muted/30">
-              <p className="text-sm text-muted-foreground">Sem dados para exibir no periodo.</p>
+      <div className="lg:col-span-3">
+        <Card className="p-0">
+          <CardHeader className="mb-0 border-b border-border px-5 py-4 sm:px-6">
+            <div className="space-y-1">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.1em] text-muted-foreground">Fluxo mensal</p>
+              <CardTitle className="text-sm font-semibold text-foreground">Evolução do caixa</CardTitle>
             </div>
-          )}
-        </CardContent>
-      </Card>
+          </CardHeader>
+          <CardContent className="h-[292px] p-4 sm:p-5">
+            {hasSeriesData ? (
+              <ChartContainer config={chartConfig} className="h-full">
+                <LineChart data={summary.monthlySeries} margin={{ top: 4, right: 8, left: -8, bottom: 0 }}>
+                  <CartesianGrid vertical={false} strokeDasharray="3 3" />
+                  <XAxis dataKey="day" tickLine={false} axisLine={false} tickMargin={8} />
+                  <YAxis
+                    tickLine={false}
+                    axisLine={false}
+                    tickMargin={8}
+                    width={72}
+                    tickFormatter={(value) => formatCurrency(Number(value))}
+                  />
+                  <ChartTooltip
+                    cursor={{ stroke: 'rgba(148, 163, 184, 0.35)', strokeWidth: 1 }}
+                    content={<ChartTooltipContent valueFormatter={(value) => formatCurrency(Number(value))} />}
+                  />
+                  <ChartLegend content={<ChartLegendContent />} />
+                  <Line
+                    type="monotone"
+                    dataKey="income"
+                    stroke="var(--color-income)"
+                    strokeWidth={2.5}
+                    dot={false}
+                    activeDot={{ r: 4 }}
+                  />
+                  <Line
+                    type="monotone"
+                    dataKey="expense"
+                    stroke="var(--color-expense)"
+                    strokeWidth={2.5}
+                    dot={false}
+                    activeDot={{ r: 4 }}
+                  />
+                </LineChart>
+              </ChartContainer>
+            ) : (
+              <div className="flex h-full flex-col items-center justify-center rounded-[4px] border border-dashed border-border bg-card">
+                <p className="text-sm font-medium text-foreground">Ainda sem movimentação</p>
+                <p className="text-xs text-muted-foreground">As linhas aparecem assim que houver transações no período.</p>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      </div>
 
-      <Card className="lg:col-span-2 rounded-lg border border-border/80 bg-card p-0 shadow-none">
-        <CardHeader className="mb-0 border-b border-border/70 px-5 py-4">
-          <CardTitle className="text-sm font-semibold text-foreground">Entradas vs Saidas</CardTitle>
-        </CardHeader>
-        <CardContent className="h-[260px] p-4">
-          {hasPieData ? (
-            <ChartContainer config={donutConfig} className="h-full">
-              <PieChart>
-                <ChartTooltip
-                  cursor={false}
-                  content={<ChartTooltipContent hideLabel valueFormatter={(value) => formatCurrency(Number(value))} />}
-                />
-                <Pie
-                  data={pieData}
-                  dataKey="value"
-                  nameKey="key"
-                  innerRadius={58}
-                  outerRadius={92}
-                  paddingAngle={3}
-                  cornerRadius={6}
-                  stroke="hsl(var(--card))"
-                  strokeWidth={3}
-                />
-                <ChartLegend content={<ChartLegendContent nameKey="key" />} />
-              </PieChart>
-            </ChartContainer>
-          ) : (
-            <div className="flex h-full items-center justify-center rounded-lg border border-dashed border-border bg-muted/30">
-              <p className="text-sm text-muted-foreground">Sem entradas ou saidas no periodo.</p>
+      <div className="lg:col-span-2">
+        <Card className="p-0">
+          <CardHeader className="mb-0 border-b border-border px-5 py-4 sm:px-6">
+            <div className="space-y-1">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.1em] text-muted-foreground">Composição</p>
+              <CardTitle className="text-sm font-semibold text-foreground">Entradas vs. saídas</CardTitle>
             </div>
-          )}
-        </CardContent>
-      </Card>
+          </CardHeader>
+          <CardContent className="h-[292px] p-4 sm:p-5">
+            {hasPieData ? (
+              <ChartContainer config={donutConfig} className="h-full">
+                <PieChart>
+                  <ChartTooltip
+                    cursor={false}
+                    content={<ChartTooltipContent hideLabel valueFormatter={(value) => formatCurrency(Number(value))} />}
+                  />
+                  <Pie
+                    data={pieData}
+                    dataKey="value"
+                    nameKey="key"
+                    innerRadius={58}
+                    outerRadius={92}
+                    paddingAngle={3}
+                    cornerRadius={3}
+                    stroke="hsl(var(--card))"
+                    strokeWidth={3}
+                  />
+                  <ChartLegend content={<ChartLegendContent nameKey="key" />} />
+                </PieChart>
+              </ChartContainer>
+            ) : (
+              <div className="flex h-full flex-col items-center justify-center rounded-[4px] border border-dashed border-border bg-card">
+                <p className="text-sm font-medium text-foreground">Sem distribuição no período</p>
+                <p className="text-xs text-muted-foreground">Entradas e saídas aparecem aqui automaticamente.</p>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      </div>
     </section>
   );
 }

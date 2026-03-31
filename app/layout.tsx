@@ -10,8 +10,8 @@ const spaceGrotesk = Space_Grotesk({
 });
 
 export const metadata: Metadata = {
-  title: 'Kontavo',
-  description: 'Gestao financeira inteligente para times modernos.'
+  title: 'Jadeon',
+  description: 'Gestão financeira inteligente para times modernos.'
 };
 
 export default function RootLayout({

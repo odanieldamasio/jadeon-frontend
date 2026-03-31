@@ -3,22 +3,22 @@
 @tailwind utilities;
 
 :root {
-  --background: 150 25% 97%;
-  --foreground: 160 28% 14%;
-  --card: 0 0% 100%;
-  --card-foreground: 160 25% 16%;
-  --border: 154 21% 85%;
-  --input: 154 21% 85%;
-  --primary: 164 71% 29%;
+  --background: 224 41% 5%;
+  --foreground: 220 18% 90%;
+  --card: 224 30% 8%;
+  --card-foreground: 220 18% 90%;
+  --border: 224 16% 17%;
+  --input: 224 16% 17%;
+  --primary: 226 75% 58%;
   --primary-foreground: 0 0% 100%;
-  --secondary: 46 65% 92%;
-  --secondary-foreground: 25 38% 24%;
-  --muted: 155 20% 93%;
-  --muted-foreground: 160 10% 40%;
-  --accent: 38 96% 61%;
-  --accent-foreground: 24 38% 18%;
-  --success: 149 70% 34%;
-  --danger: 0 72% 52%;
+  --secondary: 224 22% 12%;
+  --secondary-foreground: 220 18% 88%;
+  --muted: 224 17% 12%;
+  --muted-foreground: 224 10% 58%;
+  --accent: 226 75% 58%;
+  --accent-foreground: 0 0% 100%;
+  --success: 142 65% 42%;
+  --danger: 0 70% 52%;
 }
 
 * {
@@ -27,30 +27,63 @@
 
 body {
   @apply min-h-screen bg-background text-foreground antialiased;
-  background-image:
-    radial-gradient(circle at 0% 0%, rgba(56, 189, 151, 0.2), transparent 35%),
-    radial-gradient(circle at 100% 0%, rgba(251, 191, 36, 0.18), transparent 30%),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.45), rgba(255, 255, 255, 0.88));
+  background-color: hsl(var(--background));
 }
 
 @layer components {
-  .glass-panel {
-    @apply rounded-2xl border bg-card/85 shadow-soft backdrop-blur;
+  .page-enter {
+    animation: fade-up 0.52s cubic-bezier(0.22, 1, 0.36, 1) both;
   }
 
-  .page-enter {
-    animation: fade-up 0.45s ease-out both;
+  .surface-panel {
+    @apply rounded-[4px] border border-border bg-card shadow-soft;
+  }
+
+  .surface-subtle {
+    @apply rounded-[4px] border border-border bg-card shadow-soft;
   }
 }
 
 @keyframes fade-up {
   0% {
     opacity: 0;
-    transform: translateY(10px);
+    transform: translateY(12px) scale(0.985);
   }
 
   100% {
     opacity: 1;
-    transform: translateY(0);
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes fade-in {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes scale-in {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -48%) scale(0.97);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+
+  100% {
+    transform: translateX(100%);
   }
 }

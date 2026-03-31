@@ -12,8 +12,8 @@ import { getErrorMessage } from '@/lib/utils/error';
 import { useAuthStore } from '@/store/auth.store';
 
 const loginSchema = z.object({
-  email: z.string().email('Informe um e-mail valido'),
-  password: z.string().min(1, 'Senha obrigatoria')
+  email: z.string().email('Informe um e-mail válido'),
+  password: z.string().min(1, 'Senha obrigatória')
 });
 
 export default function LoginPage() {
@@ -50,15 +50,15 @@ export default function LoginPage() {
       await loginMutation.mutateAsync(parsed.data);
       router.replace('/dashboard');
     } catch (error) {
-      setFormError(getErrorMessage(error, 'Nao foi possivel entrar com estas credenciais.'));
+      setFormError(getErrorMessage(error, 'Não foi possível entrar com estas credenciais.'));
     }
   };
 
   return (
-    <section className="space-y-6">
+    <section className="space-y-5">
       <header className="space-y-2 text-center">
-        <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Kontavo</p>
-        <h1 className="text-2xl font-bold">Entrar na plataforma</h1>
+        <p className="text-xs uppercase tracking-[0.2em] text-primary">Jadeon</p>
+        <h1 className="text-2xl font-bold text-foreground">Entrar na plataforma</h1>
         <p className="text-sm text-muted-foreground">Acompanhe seu financeiro com clareza em minutos.</p>
       </header>
 
@@ -91,7 +91,9 @@ export default function LoginPage() {
           {errors.password ? <p className="text-xs text-danger">{errors.password}</p> : null}
         </div>
 
-        {formError ? <p className="rounded-md bg-danger/10 px-3 py-2 text-sm text-danger">{formError}</p> : null}
+        {formError ? (
+          <p className="rounded-[4px] border border-danger/25 bg-card px-3 py-2 text-sm text-danger">{formError}</p>
+        ) : null}
 
         <Button className="w-full" disabled={loginMutation.isPending}>
           {loginMutation.isPending ? 'Entrando...' : 'Entrar'}
@@ -99,7 +101,7 @@ export default function LoginPage() {
       </form>
 
       <p className="text-center text-sm text-muted-foreground">
-        Ainda nao tem conta?{' '}
+        Ainda não tem conta?{' '}
         <Link className="font-semibold text-primary hover:underline" href="/register">
           Criar cadastro
         </Link>

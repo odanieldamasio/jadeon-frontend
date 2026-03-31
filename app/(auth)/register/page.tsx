@@ -13,7 +13,7 @@ import { useAuthStore } from '@/store/auth.store';
 
 const registerSchema = z.object({
   name: z.string().trim().min(2, 'Informe seu nome'),
-  email: z.string().email('Informe um e-mail valido'),
+  email: z.string().email('Informe um e-mail válido'),
   password: z.string().min(8, 'A senha precisa ter ao menos 8 caracteres'),
   phone: z
     .string()
@@ -63,16 +63,16 @@ export default function RegisterPage() {
       await registerMutation.mutateAsync(parsed.data);
       router.replace('/dashboard');
     } catch (error) {
-      setFormError(getErrorMessage(error, 'Nao foi possivel criar sua conta agora.'));
+      setFormError(getErrorMessage(error, 'Não foi possível criar sua conta agora.'));
     }
   };
 
   return (
-    <section className="space-y-6">
+    <section className="space-y-5">
       <header className="space-y-2 text-center">
-        <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Kontavo</p>
-        <h1 className="text-2xl font-bold">Criar conta</h1>
-        <p className="text-sm text-muted-foreground">Comece a organizar seu caixa em um painel unico.</p>
+        <p className="text-xs uppercase tracking-[0.2em] text-primary">Jadeon</p>
+        <h1 className="text-2xl font-bold text-foreground">Criar conta</h1>
+        <p className="text-sm text-muted-foreground">Comece a organizar seu caixa em um painel único.</p>
       </header>
 
       <form className="space-y-4" onSubmit={handleSubmit}>
@@ -131,7 +131,9 @@ export default function RegisterPage() {
           {errors.password ? <p className="text-xs text-danger">{errors.password}</p> : null}
         </div>
 
-        {formError ? <p className="rounded-md bg-danger/10 px-3 py-2 text-sm text-danger">{formError}</p> : null}
+        {formError ? (
+          <p className="rounded-[4px] border border-danger/25 bg-card px-3 py-2 text-sm text-danger">{formError}</p>
+        ) : null}
 
         <Button className="w-full" disabled={registerMutation.isPending}>
           {registerMutation.isPending ? 'Criando conta...' : 'Criar conta'}
@@ -139,7 +141,7 @@ export default function RegisterPage() {
       </form>
 
       <p className="text-center text-sm text-muted-foreground">
-        Ja tem conta?{' '}
+        Já tem conta?{' '}
         <Link className="font-semibold text-primary hover:underline" href="/login">
           Fazer login
         </Link>
