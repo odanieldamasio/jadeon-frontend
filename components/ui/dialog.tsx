@@ -16,7 +16,10 @@ const DialogOverlay = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <DialogPrimitive.Overlay
     ref={ref}
-    className={cn('fixed inset-0 z-50 bg-black/70 data-[state=open]:animate-[fade-in_220ms_ease]', className)}
+    className={cn(
+      'fixed inset-0 z-50 bg-black/75 backdrop-blur-sm data-[state=open]:animate-[fade-in_220ms_ease]',
+      className
+    )}
     {...props}
   />
 ));
@@ -31,13 +34,13 @@ const DialogContent = React.forwardRef<
     <DialogPrimitive.Content
       ref={ref}
       className={cn(
-        'fixed left-1/2 top-1/2 z-50 w-[94vw] max-w-xl -translate-x-1/2 -translate-y-1/2 rounded-[4px] border border-border bg-card p-6 shadow-soft-xl data-[state=open]:animate-[scale-in_260ms_cubic-bezier(0.22,1,0.36,1)] sm:p-7',
+        'fixed left-1/2 top-1/2 z-50 w-[94vw] max-w-xl -translate-x-1/2 -translate-y-1/2 rounded-3xl border border-border bg-card/95 p-6 shadow-soft-xl backdrop-blur-xl data-[state=open]:animate-[scale-in_260ms_cubic-bezier(0.22,1,0.36,1)] sm:p-7',
         className
       )}
       {...props}
     >
       {children}
-      <DialogClose className="absolute right-4 top-4 rounded-[4px] border border-border bg-muted p-1 text-muted-foreground transition-all duration-200 hover:border-primary/40 hover:bg-muted hover:text-foreground focus:outline-none focus:ring-2 focus:ring-primary/25">
+      <DialogClose className="absolute right-4 top-4 rounded-xl border border-border bg-secondary/85 p-1.5 text-muted-foreground transition-all duration-300 hover:border-primary/40 hover:text-foreground focus:outline-none focus:ring-2 focus:ring-primary-neon/45">
         <X className="h-4 w-4" />
         <span className="sr-only">Fechar</span>
       </DialogClose>
@@ -47,7 +50,7 @@ const DialogContent = React.forwardRef<
 DialogContent.displayName = DialogPrimitive.Content.displayName;
 
 function DialogHeader({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
-  return <div className={cn('mb-4 flex flex-col gap-2', className)} {...props} />;
+  return <div className={cn('mb-5 flex flex-col gap-2.5', className)} {...props} />;
 }
 
 function DialogTitle({ className, ...props }: React.HTMLAttributes<HTMLHeadingElement>) {

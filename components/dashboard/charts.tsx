@@ -20,22 +20,22 @@ interface ChartsProps {
 const chartConfig = {
   income: {
     label: 'Entradas',
-    color: '#22c55e'
+    color: '#4ade80'
   },
   expense: {
     label: 'Saídas',
-    color: '#ef4444'
+    color: '#f87171'
   }
 } satisfies ChartConfig;
 
 const donutConfig = {
   income: {
     label: 'Entradas',
-    color: '#22c55e'
+    color: '#4ade80'
   },
   expense: {
     label: 'Saídas',
-    color: '#ef4444'
+    color: '#f87171'
   }
 } satisfies ChartConfig;
 
@@ -61,7 +61,7 @@ export function Charts({ summary }: ChartsProps) {
     <section className="grid gap-4 lg:grid-cols-5">
       <div className="lg:col-span-3">
         <Card className="p-0">
-          <CardHeader className="mb-0 border-b border-border px-5 py-4 sm:px-6">
+          <CardHeader>
             <div className="space-y-1">
               <p className="text-[11px] font-semibold uppercase tracking-[0.1em] text-muted-foreground">Fluxo mensal</p>
               <CardTitle className="text-sm font-semibold text-foreground">Evolução do caixa</CardTitle>
@@ -81,7 +81,7 @@ export function Charts({ summary }: ChartsProps) {
                     tickFormatter={(value) => formatCurrency(Number(value))}
                   />
                   <ChartTooltip
-                    cursor={{ stroke: 'rgba(148, 163, 184, 0.35)', strokeWidth: 1 }}
+                    cursor={{ stroke: 'rgba(34, 197, 94, 0.32)', strokeWidth: 1 }}
                     content={<ChartTooltipContent valueFormatter={(value) => formatCurrency(Number(value))} />}
                   />
                   <ChartLegend content={<ChartLegendContent />} />
@@ -104,7 +104,7 @@ export function Charts({ summary }: ChartsProps) {
                 </LineChart>
               </ChartContainer>
             ) : (
-              <div className="flex h-full flex-col items-center justify-center rounded-[4px] border border-dashed border-border bg-card">
+              <div className="flex h-full flex-col items-center justify-center rounded-2xl border border-dashed border-border bg-secondary/70">
                 <p className="text-sm font-medium text-foreground">Ainda sem movimentação</p>
                 <p className="text-xs text-muted-foreground">As linhas aparecem assim que houver transações no período.</p>
               </div>
@@ -115,7 +115,7 @@ export function Charts({ summary }: ChartsProps) {
 
       <div className="lg:col-span-2">
         <Card className="p-0">
-          <CardHeader className="mb-0 border-b border-border px-5 py-4 sm:px-6">
+          <CardHeader>
             <div className="space-y-1">
               <p className="text-[11px] font-semibold uppercase tracking-[0.1em] text-muted-foreground">Composição</p>
               <CardTitle className="text-sm font-semibold text-foreground">Entradas vs. saídas</CardTitle>
@@ -144,7 +144,7 @@ export function Charts({ summary }: ChartsProps) {
                 </PieChart>
               </ChartContainer>
             ) : (
-              <div className="flex h-full flex-col items-center justify-center rounded-[4px] border border-dashed border-border bg-card">
+              <div className="flex h-full flex-col items-center justify-center rounded-2xl border border-dashed border-border bg-secondary/70">
                 <p className="text-sm font-medium text-foreground">Sem distribuição no período</p>
                 <p className="text-xs text-muted-foreground">Entradas e saídas aparecem aqui automaticamente.</p>
               </div>

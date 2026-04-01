@@ -15,7 +15,7 @@ const summaryConfig = [
     key: 'current-balance',
     title: 'Saldo Atual',
     icon: WalletCards,
-    iconClassName: 'border-primary/30 bg-primary/15 text-primary',
+    iconClassName: 'border-primary/35 bg-primary/15 text-primary-neon',
     valueClassName: 'text-foreground'
   },
   {
@@ -43,10 +43,10 @@ export function SummaryCards({ currentBalance, monthIncome, monthExpense }: Summ
         const Icon = item.icon;
         return (
           <Card key={item.key} className="p-0">
-            <CardContent className="flex items-center gap-4 p-4 sm:p-5">
+            <CardContent className="flex items-center gap-4 p-5 sm:p-6">
               <span
                 className={
-                  'inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-[4px] border ' +
+                  'inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border ' +
                   item.iconClassName
                 }
               >

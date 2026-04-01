@@ -1,6 +1,20 @@
 'use client';
 
-import { Pencil, Plus, Trash2 } from 'lucide-react';
+import {
+  BriefcaseBusiness,
+  Car,
+  GraduationCap,
+  HeartPulse,
+  Home,
+  Laptop,
+  Pencil,
+  Plane,
+  Plus,
+  ShoppingCart,
+  Tag,
+  Trash2,
+  Wallet
+} from 'lucide-react';
 import { useState } from 'react';
 import { CategoryForm } from '@/components/categories/category-form';
 import { Button } from '@/components/ui/button';
@@ -72,10 +86,10 @@ export default function CategoriesPage() {
   };
 
   return (
-    <section className="space-y-5">
+    <section className="space-y-6">
       <header className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-foreground">Categorias</h1>
+          <h1 className="text-3xl font-bold tracking-tight text-gradient-primary">Categorias</h1>
           <p className="text-sm text-muted-foreground">Organize seu plano de contas com regras claras.</p>
         </div>
 
@@ -85,9 +99,7 @@ export default function CategoriesPage() {
         </Button>
       </header>
 
-      {formError ? (
-        <p className="rounded-[4px] border border-danger/25 bg-card px-3 py-2 text-sm text-danger">{formError}</p>
-      ) : null}
+      {formError ? <p className="rounded-xl border border-danger/35 bg-danger/10 px-3 py-2 text-sm text-danger">{formError}</p> : null}
 
       <Card className="overflow-hidden">
         <CardHeader>
@@ -105,7 +117,7 @@ export default function CategoriesPage() {
           ) : categoriesQuery.data?.length ? (
             <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
               {categoriesQuery.data.map((category) => (
-                <article key={category.id} className="rounded-[4px] border border-border bg-card p-4">
+                <article key={category.id} className="hover-lift rounded-2xl border border-border bg-card/85 p-5">
                   <div className="mb-3 flex items-center gap-2">
                     <span
                       className="h-3 w-3 rounded-full"
@@ -113,7 +125,15 @@ export default function CategoriesPage() {
                     />
                     <h2 className="font-semibold text-foreground">{category.name}</h2>
                   </div>
-                  <p className="mb-3 text-xs text-muted-foreground">Ícone: {category.icon}</p>
+                  <div className="mb-3 flex items-center gap-2 text-xs text-muted-foreground">
+                    <span className="inline-flex h-7 w-7 items-center justify-center rounded-lg border border-border bg-secondary/80">
+                      {(() => {
+                        const Icon = iconMap[category.icon as keyof typeof iconMap] ?? Tag;
+                        return <Icon className="h-4 w-4" />;
+                      })()}
+                    </span>
+                    <span>{category.icon}</span>
+                  </div>
                   <div className="flex gap-2">
                     <Button variant="outline" size="sm" onClick={() => handleEdit(category)}>
                       <Pencil className="mr-1 h-4 w-4" />
@@ -148,3 +168,15 @@ export default function CategoriesPage() {
     </section>
   );
 }
+  const iconMap = {
+    wallet: Wallet,
+    'shopping-cart': ShoppingCart,
+    car: Car,
+    home: Home,
+    'heart-pulse': HeartPulse,
+    'briefcase-business': BriefcaseBusiness,
+    'graduation-cap': GraduationCap,
+    laptop: Laptop,
+    plane: Plane,
+    tag: Tag
+  } as const;

@@ -1,4 +1,17 @@
-import { Pencil, Trash2 } from 'lucide-react';
+import {
+  BriefcaseBusiness,
+  Car,
+  GraduationCap,
+  HeartPulse,
+  Home,
+  Laptop,
+  Pencil,
+  Plane,
+  ShoppingCart,
+  Tag,
+  Trash2,
+  Wallet
+} from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
@@ -20,6 +33,19 @@ export function TransactionTable({
   onDelete,
   deletingId
 }: TransactionTableProps) {
+  const iconMap = {
+    wallet: Wallet,
+    'shopping-cart': ShoppingCart,
+    car: Car,
+    home: Home,
+    'heart-pulse': HeartPulse,
+    'briefcase-business': BriefcaseBusiness,
+    'graduation-cap': GraduationCap,
+    laptop: Laptop,
+    plane: Plane,
+    tag: Tag
+  } as const;
+
   const categoriesMap = new Map(categories.map((category) => [category.id, category]));
 
   return (
@@ -56,10 +82,17 @@ export function TransactionTable({
                 <TableCell className="font-medium">{transaction.description}</TableCell>
                 <TableCell>
                   <span className="inline-flex items-center gap-2 text-sm">
-                    <span
-                      className="h-2.5 w-2.5 rounded-full"
-                      style={{ backgroundColor: category?.color || '#94a3b8' }}
-                    />
+                    <span className="inline-flex h-6 w-6 items-center justify-center rounded-lg border border-border bg-secondary/70">
+                      {(() => {
+                        const Icon = iconMap[category?.icon as keyof typeof iconMap] ?? Tag;
+                        return (
+                          <Icon
+                            className="h-3.5 w-3.5"
+                            style={{ color: category?.color || '#9CA3AF' }}
+                          />
+                        );
+                      })()}
+                    </span>
                     {category?.name || 'Sem categoria'}
                   </span>
                 </TableCell>

@@ -20,8 +20,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="pt-BR">
-      <body className={`${spaceGrotesk.variable} font-sans`}>
+    <html lang="pt-BR" className="dark">
+      <body className={`${spaceGrotesk.variable} font-sans text-foreground`}>
         <Providers>{children}</Providers>
       </body>
     </html>

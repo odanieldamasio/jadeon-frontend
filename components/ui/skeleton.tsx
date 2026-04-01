@@ -4,7 +4,7 @@ function Skeleton({ className }: { className?: string }) {
   return (
     <div
       className={cn(
-        'animate-pulse rounded-[4px] border border-border bg-muted',
+        'animate-pulse rounded-2xl border border-border bg-secondary/80',
         className
       )}
     />

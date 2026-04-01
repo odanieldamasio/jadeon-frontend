@@ -22,29 +22,29 @@ export default function DashboardPage() {
     return (
       <section className="space-y-4">
         <div className="grid gap-4 md:grid-cols-3">
-          <Skeleton className="h-32 rounded-[4px]" />
-          <Skeleton className="h-32 rounded-[4px]" />
-          <Skeleton className="h-32 rounded-[4px]" />
+          <Skeleton className="h-32 rounded-2xl" />
+          <Skeleton className="h-32 rounded-2xl" />
+          <Skeleton className="h-32 rounded-2xl" />
         </div>
-        <Skeleton className="h-[304px] rounded-[4px]" />
+        <Skeleton className="h-[304px] rounded-2xl" />
       </section>
     );
   }
 
   if (summaryQuery.isError || !summaryQuery.data) {
     return (
-      <div className="surface-panel p-6 text-danger">
+      <div className="surface-panel rounded-2xl border-danger/40 bg-danger/10 p-6 text-danger">
         Não foi possível carregar os dados do dashboard agora.
       </div>
     );
   }
 
   return (
-    <section className="space-y-6">
+    <section className="space-y-7">
       <div className="flex items-start justify-between gap-3">
         <div className="flex flex-col gap-1">
-          <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">Visão geral</p>
-          <h1 className="text-2xl font-bold tracking-tight text-foreground sm:text-[2rem]">Dashboard financeiro</h1>
+          <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-primary-neon">Visão geral</p>
+          <h1 className="text-3xl font-bold tracking-tight text-gradient-primary sm:text-[2.15rem]">Dashboard financeiro</h1>
           <p className="text-sm text-muted-foreground">Fluxo de caixa e atividade recente do seu MEI em tempo real.</p>
         </div>
       </div>
@@ -59,7 +59,7 @@ export default function DashboardPage() {
 
       <div>
         <Card className="p-0">
-          <CardHeader className="mb-0 border-b border-border px-5 py-4 sm:px-6">
+          <CardHeader>
             <div className="flex w-full items-center justify-between gap-4">
               <div className="space-y-1">
                 <p className="text-[11px] font-semibold uppercase tracking-[0.1em] text-muted-foreground">Atividade recente</p>
@@ -67,7 +67,7 @@ export default function DashboardPage() {
               </div>
               <Link
                 href="/transactions"
-                className="rounded-[4px] border border-border bg-card px-2.5 py-1 text-xs font-semibold uppercase tracking-[0.08em] text-muted-foreground transition-colors hover:border-primary/40 hover:text-foreground"
+                className="rounded-full border border-border bg-secondary/75 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground transition-all duration-300 hover:border-primary/40 hover:text-foreground"
               >
                 Ver mais
               </Link>
@@ -76,8 +76,8 @@ export default function DashboardPage() {
           <CardContent className="p-0">
             {recentQuery.isLoading ? (
               <div className="space-y-2.5 px-5 py-4 sm:px-6">
-                <Skeleton className="h-14 rounded-[4px]" />
-                <Skeleton className="h-14 rounded-[4px]" />
+                <Skeleton className="h-14 rounded-2xl" />
+                <Skeleton className="h-14 rounded-2xl" />
               </div>
             ) : recentQuery.data?.length ? (
               <div>
@@ -88,7 +88,7 @@ export default function DashboardPage() {
                   return (
                   <div
                     key={transaction.id}
-                    className="flex items-center justify-between gap-4 border-b border-border px-5 py-3.5 transition-colors hover:bg-muted last:border-b-0 sm:px-6"
+                    className="flex items-center justify-between gap-4 border-b border-border px-5 py-4 transition-all duration-300 hover:bg-secondary/70 last:border-b-0 sm:px-6"
                   >
                       <div className="min-w-0">
                         <p className="truncate text-[0.95rem] font-semibold tracking-tight text-foreground">{transaction.description}</p>

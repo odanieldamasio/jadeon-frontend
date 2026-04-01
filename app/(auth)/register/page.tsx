@@ -68,10 +68,10 @@ export default function RegisterPage() {
   };
 
   return (
-    <section className="space-y-5">
+    <section className="space-y-6">
       <header className="space-y-2 text-center">
-        <p className="text-xs uppercase tracking-[0.2em] text-primary">Jadeon</p>
-        <h1 className="text-2xl font-bold text-foreground">Criar conta</h1>
+        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary-neon">Jadeon</p>
+        <h1 className="text-3xl font-bold tracking-tight text-gradient-primary">Criar conta</h1>
         <p className="text-sm text-muted-foreground">Comece a organizar seu caixa em um painel único.</p>
       </header>
 
@@ -132,7 +132,7 @@ export default function RegisterPage() {
         </div>
 
         {formError ? (
-          <p className="rounded-[4px] border border-danger/25 bg-card px-3 py-2 text-sm text-danger">{formError}</p>
+          <p className="rounded-xl border border-danger/35 bg-danger/10 px-3 py-2 text-sm text-danger">{formError}</p>
         ) : null}
 
         <Button className="w-full" disabled={registerMutation.isPending}>
@@ -142,7 +142,7 @@ export default function RegisterPage() {
 
       <p className="text-center text-sm text-muted-foreground">
         Já tem conta?{' '}
-        <Link className="font-semibold text-primary hover:underline" href="/login">
+        <Link className="font-semibold text-primary-neon hover:underline" href="/login">
           Fazer login
         </Link>
       </p>

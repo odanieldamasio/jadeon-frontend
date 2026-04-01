@@ -14,14 +14,19 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select } from '@/components/ui/select';
-import { fromDateInputValue, toDateInputValue } from '@/lib/utils/date';
+import {
+  fromBrDateInputValue,
+  isValidBrDateInput,
+  normalizeBrDateInput,
+  toBrDateInputValue
+} from '@/lib/utils/date';
 import type { Category, CreateTransactionPayload, Transaction } from '@/types';
 
 const schema = z.object({
   type: z.enum(['INCOME', 'EXPENSE']),
   amount: z.coerce.number().positive('Valor deve ser maior que zero'),
   description: z.string().trim().min(2, 'Descrição obrigatória'),
-  date: z.string().min(1, 'Data obrigatória'),
+  date: z.string().refine((value) => isValidBrDateInput(value), 'Data inválida (dd/mm/aaaa)'),
   categoryId: z.string().min(1, 'Categoria obrigatória')
 });
 
@@ -46,7 +51,7 @@ const initialValues: FormValues = {
   type: 'EXPENSE',
   amount: '',
   description: '',
-  date: new Date().toISOString().slice(0, 10),
+  date: toBrDateInputValue(new Date().toISOString()),
   categoryId: ''
 };
 
@@ -73,7 +78,7 @@ export function TransactionForm({
         type: transaction.type,
         amount: String(transaction.amount),
         description: transaction.description,
-        date: toDateInputValue(transaction.date),
+        date: toBrDateInputValue(transaction.date),
         categoryId: transaction.categoryId
       });
       return;
@@ -112,7 +117,7 @@ export function TransactionForm({
       type: parsed.data.type,
       amount: Number(parsed.data.amount),
       description: parsed.data.description,
-      date: fromDateInputValue(parsed.data.date),
+      date: fromBrDateInputValue(parsed.data.date),
       categoryId: parsed.data.categoryId,
       source: 'MANUAL'
     });
@@ -130,16 +135,34 @@ export function TransactionForm({
 
         <form className="space-y-4" onSubmit={handleSubmit}>
           <div className="grid gap-2">
-            <Label htmlFor="type">Tipo</Label>
-            <Select
-              id="type"
-              value={values.type}
-              onChange={(event) => updateField('type', event.target.value as 'INCOME' | 'EXPENSE')}
-            >
-              <option value="EXPENSE">Saída</option>
-              <option value="INCOME">Entrada</option>
-            </Select>
-            {errors.type ? <p className="text-xs text-danger">{errors.type}</p> : null}
+            <Label>Tipo</Label>
+            <div className="grid grid-cols-2 gap-2">
+              <Button
+                type="button"
+                variant={values.type === 'INCOME' ? 'secondary' : 'outline'}
+                className={
+                  values.type === 'INCOME'
+                    ? 'border-success/55 bg-success/18 text-success hover:border-success/70'
+                    : 'border-success/35 text-success hover:border-success/55'
+                }
+                onClick={() => updateField('type', 'INCOME')}
+              >
+                Entrada
+              </Button>
+              <Button
+                type="button"
+                variant={values.type === 'EXPENSE' ? 'secondary' : 'outline'}
+                className={
+                  values.type === 'EXPENSE'
+                    ? 'border-danger/55 bg-danger/18 text-danger hover:border-danger/70'
+                    : 'border-danger/35 text-danger hover:border-danger/55'
+                }
+                onClick={() => updateField('type', 'EXPENSE')}
+              >
+                Saída
+              </Button>
+            </div>
+            {errors.type ? <p className="text-xs text-danger/95">{errors.type}</p> : null}
           </div>
 
           <div className="grid gap-2">
@@ -151,7 +174,7 @@ export function TransactionForm({
               value={values.amount}
               onChange={(event) => updateField('amount', event.target.value)}
             />
-            {errors.amount ? <p className="text-xs text-danger">{errors.amount}</p> : null}
+            {errors.amount ? <p className="text-xs text-danger/95">{errors.amount}</p> : null}
           </div>
 
           <div className="grid gap-2">
@@ -161,7 +184,7 @@ export function TransactionForm({
               value={values.description}
               onChange={(event) => updateField('description', event.target.value)}
             />
-            {errors.description ? <p className="text-xs text-danger">{errors.description}</p> : null}
+            {errors.description ? <p className="text-xs text-danger/95">{errors.description}</p> : null}
           </div>
 
           <div className="grid gap-2 sm:grid-cols-2">
@@ -169,11 +192,12 @@ export function TransactionForm({
               <Label htmlFor="date">Data</Label>
               <Input
                 id="date"
-                type="date"
+                inputMode="numeric"
+                placeholder="dd/mm/aaaa"
                 value={values.date}
-                onChange={(event) => updateField('date', event.target.value)}
+                onChange={(event) => updateField('date', normalizeBrDateInput(event.target.value))}
               />
-              {errors.date ? <p className="text-xs text-danger">{errors.date}</p> : null}
+              {errors.date ? <p className="text-xs text-danger/95">{errors.date}</p> : null}
             </div>
 
             <div className="grid gap-2">
@@ -189,7 +213,7 @@ export function TransactionForm({
                   </option>
                 ))}
               </Select>
-              {errors.categoryId ? <p className="text-xs text-danger">{errors.categoryId}</p> : null}
+              {errors.categoryId ? <p className="text-xs text-danger/95">{errors.categoryId}</p> : null}
             </div>
           </div>
 

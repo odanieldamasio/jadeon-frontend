@@ -53,13 +53,13 @@ export default function SettingsPage() {
   }
 
   if (userQuery.isError || !userQuery.data) {
-    return <div className="surface-panel p-6 text-danger">Não foi possível carregar suas configurações.</div>;
+    return <div className="surface-panel rounded-2xl border-danger/40 bg-danger/10 p-6 text-danger">Não foi possível carregar suas configurações.</div>;
   }
 
   return (
-    <section className="space-y-5">
+    <section className="space-y-6">
       <header>
-        <h1 className="text-2xl font-bold text-foreground">Configurações</h1>
+        <h1 className="text-3xl font-bold tracking-tight text-gradient-primary">Configurações</h1>
         <p className="text-sm text-muted-foreground">Ajuste perfil e assinatura da sua conta.</p>
       </header>
 
@@ -116,7 +116,7 @@ export default function SettingsPage() {
           </div>
 
           {billingError ? (
-            <p className="rounded-[4px] border border-danger/25 bg-card px-3 py-2 text-sm text-danger">{billingError}</p>
+            <p className="rounded-xl border border-danger/35 bg-danger/10 px-3 py-2 text-sm text-danger">{billingError}</p>
           ) : null}
         </CardContent>
       </Card>

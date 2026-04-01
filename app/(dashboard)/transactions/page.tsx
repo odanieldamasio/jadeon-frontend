@@ -17,7 +17,11 @@ import {
   useTransactions,
   useUpdateTransaction
 } from '@/lib/hooks/use-transactions';
-import { fromDateInputValue } from '@/lib/utils/date';
+import {
+  fromBrDateInputValue,
+  isValidBrDateInput,
+  normalizeBrDateInput
+} from '@/lib/utils/date';
 import { getErrorMessage } from '@/lib/utils/error';
 import type { CreateTransactionPayload, Transaction } from '@/types';
 
@@ -55,8 +59,8 @@ export default function TransactionsPage() {
   const transactionsQuery = useTransactions({
     type: filters.type || undefined,
     categoryId: filters.categoryId || undefined,
-    startDate: filters.startDate ? fromDateInputValue(filters.startDate) : undefined,
-    endDate: filters.endDate ? fromDateInputValue(filters.endDate, true) : undefined,
+    startDate: isValidBrDateInput(filters.startDate) ? fromBrDateInputValue(filters.startDate) : undefined,
+    endDate: isValidBrDateInput(filters.endDate) ? fromBrDateInputValue(filters.endDate, true) : undefined,
     page: filters.page,
     limit: filters.limit
   });
@@ -182,10 +186,10 @@ export default function TransactionsPage() {
   };
 
   return (
-    <section className="space-y-5">
+    <section className="space-y-6">
       <header className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-foreground">Transações</h1>
+          <h1 className="text-3xl font-bold tracking-tight text-gradient-primary">Transações</h1>
           <p className="text-sm text-muted-foreground">Gerencie entradas e saídas com filtros e edição rápida.</p>
         </div>
 
@@ -196,7 +200,7 @@ export default function TransactionsPage() {
       </header>
 
       {showNoCategoriesWarning ? (
-        <div className="rounded-[4px] border border-amber-500/35 bg-card px-4 py-3 text-sm text-amber-300">
+        <div className="rounded-2xl border border-amber-500/35 bg-amber-500/10 px-4 py-3 text-sm text-amber-300">
           Crie ao menos uma categoria antes de registrar transações.
         </div>
       ) : null}
@@ -205,15 +209,33 @@ export default function TransactionsPage() {
         <CardHeader>
           <CardTitle>Filtros</CardTitle>
         </CardHeader>
-        <CardContent className="grid gap-3 md:grid-cols-5">
-          <Select
-            value={filters.type}
-            onChange={(event) => updateFilter('type', event.target.value as FiltersState['type'])}
-            placeholder="Tipo"
-          >
-            <option value="INCOME">Entrada</option>
-            <option value="EXPENSE">Saída</option>
-          </Select>
+        <CardContent className="grid gap-3 md:grid-cols-6">
+          <div className="grid grid-cols-2 gap-2 md:col-span-2">
+            <Button
+              type="button"
+              variant={filters.type === 'INCOME' ? 'secondary' : 'outline'}
+              className={
+                filters.type === 'INCOME'
+                  ? 'border-success/55 bg-success/18 text-success hover:border-success/70'
+                  : 'border-success/35 text-success hover:border-success/55'
+              }
+              onClick={() => updateFilter('type', filters.type === 'INCOME' ? '' : 'INCOME')}
+            >
+              Entrada
+            </Button>
+            <Button
+              type="button"
+              variant={filters.type === 'EXPENSE' ? 'secondary' : 'outline'}
+              className={
+                filters.type === 'EXPENSE'
+                  ? 'border-danger/55 bg-danger/18 text-danger hover:border-danger/70'
+                  : 'border-danger/35 text-danger hover:border-danger/55'
+              }
+              onClick={() => updateFilter('type', filters.type === 'EXPENSE' ? '' : 'EXPENSE')}
+            >
+              Saída
+            </Button>
+          </div>
 
           <Select
             value={filters.categoryId}
@@ -228,15 +250,17 @@ export default function TransactionsPage() {
           </Select>
 
           <Input
-            type="date"
+            inputMode="numeric"
+            placeholder="Data inicial (dd/mm/aaaa)"
             value={filters.startDate}
-            onChange={(event) => updateFilter('startDate', event.target.value)}
+            onChange={(event) => updateFilter('startDate', normalizeBrDateInput(event.target.value))}
           />
 
           <Input
-            type="date"
+            inputMode="numeric"
+            placeholder="Data final (dd/mm/aaaa)"
             value={filters.endDate}
-            onChange={(event) => updateFilter('endDate', event.target.value)}
+            onChange={(event) => updateFilter('endDate', normalizeBrDateInput(event.target.value))}
           />
 
           <Button variant="outline" onClick={() => setFilters(initialFilters)}>
@@ -245,9 +269,7 @@ export default function TransactionsPage() {
         </CardContent>
       </Card>
 
-      {formError ? (
-        <p className="rounded-[4px] border border-danger/25 bg-card px-3 py-2 text-sm text-danger">{formError}</p>
-      ) : null}
+      {formError ? <p className="rounded-xl border border-danger/35 bg-danger/10 px-3 py-2 text-sm text-danger">{formError}</p> : null}
 
       <Card className="overflow-hidden">
         <CardHeader>
