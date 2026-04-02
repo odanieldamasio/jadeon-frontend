@@ -10,6 +10,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useRegister } from '@/lib/hooks/use-auth';
 import { getErrorMessage } from '@/lib/utils/error';
+import { maskBrPhoneInput, normalizePhoneToE164 } from '@/lib/utils/phone';
 import { useAuthStore } from '@/store/auth.store';
 
 const registerSchema = z.object({
@@ -20,7 +21,9 @@ const registerSchema = z.object({
     .string()
     .trim()
     .optional()
-    .transform((value) => value || undefined)
+    .transform((value) => value || '')
+    .refine((value) => value === '' || normalizePhoneToE164(value) !== null, 'Telefone inválido')
+    .transform((value) => (value === '' ? undefined : normalizePhoneToE164(value) || undefined))
 });
 
 export default function RegisterPage() {
@@ -71,7 +74,7 @@ export default function RegisterPage() {
   return (
     <section className="space-y-6">
       <header className="space-y-2 text-center">
-        <div className="mx-auto w-fit rounded-2xl border border-border bg-card/70 px-2.5 py-2">
+        <div className="mx-auto mb-6 w-fit rounded-2xl px-2.5 py-2">
           <Image src="/jadeon-logo.svg" alt="Jadeon" width={94} height={39} className="h-auto w-[94px]" priority />
         </div>
         <h1 className="text-3xl font-bold tracking-tight text-gradient-primary">Criar conta</h1>
@@ -110,10 +113,11 @@ export default function RegisterPage() {
           <Label htmlFor="phone">Telefone (opcional)</Label>
           <Input
             id="phone"
-            placeholder="+5511999999999"
+            inputMode="numeric"
+            placeholder="(11) 99999-9999"
             value={values.phone}
             onChange={(event) => {
-              setValues((current) => ({ ...current, phone: event.target.value }));
+              setValues((current) => ({ ...current, phone: maskBrPhoneInput(event.target.value) }));
               setErrors((current) => ({ ...current, phone: undefined }));
             }}
           />

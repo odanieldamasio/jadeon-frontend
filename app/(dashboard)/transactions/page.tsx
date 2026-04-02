@@ -6,9 +6,9 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { TransactionForm } from '@/components/transactions/transaction-form';
 import { TransactionTable } from '@/components/transactions/transaction-table';
 import { Button } from '@/components/ui/button';
+import { CategorySelect } from '@/components/ui/category-select';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { Select } from '@/components/ui/select';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useCategories } from '@/lib/hooks/use-categories';
 import {
@@ -205,7 +205,7 @@ export default function TransactionsPage() {
         </div>
       ) : null}
 
-      <Card className="overflow-hidden">
+      <Card className="relative z-20 overflow-visible">
         <CardHeader>
           <CardTitle>Filtros</CardTitle>
         </CardHeader>
@@ -228,7 +228,7 @@ export default function TransactionsPage() {
               variant={filters.type === 'EXPENSE' ? 'secondary' : 'outline'}
               className={
                 filters.type === 'EXPENSE'
-                  ? 'border-danger bg-danger/28 text-danger shadow-[0_0_0_1px_rgba(239,68,68,0.4),0_16px_34px_-22px_rgba(239,68,68,0.7)]'
+                  ? 'border-danger bg-danger/30 text-danger shadow-[0_0_0_1px_rgba(239,68,68,0.4),0_16px_34px_-22px_rgba(239,68,68,0.7)]'
                   : 'border-danger/35 text-danger hover:border-danger/55'
               }
               onClick={() => updateFilter('type', filters.type === 'EXPENSE' ? '' : 'EXPENSE')}
@@ -237,17 +237,14 @@ export default function TransactionsPage() {
             </Button>
           </div>
 
-          <Select
+          <CategorySelect
+            categories={categories}
             value={filters.categoryId}
-            onChange={(event) => updateFilter('categoryId', event.target.value)}
-            placeholder="Categoria"
-          >
-            {categories.map((category) => (
-              <option key={category.id} value={category.id}>
-                {category.name}
-              </option>
-            ))}
-          </Select>
+            onChange={(nextCategoryId) => updateFilter('categoryId', nextCategoryId)}
+            allowEmpty
+            emptyLabel="Categorias"
+            placeholder="Filtrar categoria"
+          />
 
           <Input
             inputMode="numeric"

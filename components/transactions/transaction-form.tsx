@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { z } from 'zod';
 import { Button } from '@/components/ui/button';
+import { CategorySelect } from '@/components/ui/category-select';
 import {
   Dialog,
   DialogContent,
@@ -13,7 +14,6 @@ import {
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Select } from '@/components/ui/select';
 import {
   fromBrDateInputValue,
   isValidBrDateInput,
@@ -155,7 +155,7 @@ export function TransactionForm({
                 variant={values.type === 'EXPENSE' ? 'secondary' : 'outline'}
                 className={
                   values.type === 'EXPENSE'
-                    ? 'border-danger bg-danger/28 text-danger shadow-[0_0_0_1px_rgba(239,68,68,0.4),0_16px_34px_-22px_rgba(239,68,68,0.7)]'
+                    ? 'border-danger bg-danger/30 text-danger shadow-[0_0_0_1px_rgba(239,68,68,0.4),0_16px_34px_-22px_rgba(239,68,68,0.7)]'
                     : 'border-danger/35 text-danger hover:border-danger/55'
                 }
                 onClick={() => updateField('type', 'EXPENSE')}
@@ -203,17 +203,12 @@ export function TransactionForm({
 
             <div className="grid gap-2">
               <Label htmlFor="category">Categoria</Label>
-              <Select
-                id="category"
+              <CategorySelect
+                categories={categories}
                 value={values.categoryId}
-                onChange={(event) => updateField('categoryId', event.target.value)}
-              >
-                {categories.map((category) => (
-                  <option key={category.id} value={category.id}>
-                    {category.name}
-                  </option>
-                ))}
-              </Select>
+                onChange={(nextCategoryId) => updateField('categoryId', nextCategoryId)}
+                placeholder="Selecione uma categoria"
+              />
               {errors.categoryId ? <p className="text-xs text-danger/95">{errors.categoryId}</p> : null}
             </div>
           </div>
