@@ -3,7 +3,7 @@
 import { useMutation } from '@tanstack/react-query';
 import { api } from '@/lib/api';
 import { useAuthStore } from '@/store/auth.store';
-import type { AuthResponse } from '@/types';
+import type { AuthResponse, PlanType } from '@/types';
 
 interface LoginPayload {
   email: string;
@@ -15,6 +15,7 @@ interface RegisterPayload {
   name: string;
   password: string;
   phone?: string;
+  planType?: PlanType;
 }
 
 export function useLogin() {

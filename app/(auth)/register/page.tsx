@@ -8,15 +8,18 @@ import { z } from 'zod';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { api } from '@/lib/api';
 import { useRegister } from '@/lib/hooks/use-auth';
 import { getErrorMessage } from '@/lib/utils/error';
 import { maskBrPhoneInput, normalizePhoneToE164 } from '@/lib/utils/phone';
 import { useAuthStore } from '@/store/auth.store';
+import type { BillingUrlResponse, PlanType } from '@/types';
 
 const registerSchema = z.object({
   name: z.string().trim().min(2, 'Informe seu nome'),
   email: z.string().email('Informe um e-mail válido'),
   password: z.string().min(8, 'A senha precisa ter ao menos 8 caracteres'),
+  planType: z.enum(['FREE', 'ESSENTIAL', 'PREMIUM']),
   phone: z
     .string()
     .trim()
@@ -35,16 +38,21 @@ export default function RegisterPage() {
     name: '',
     email: '',
     password: '',
+    planType: 'FREE' as PlanType,
     phone: ''
   });
-  const [errors, setErrors] = useState<Partial<Record<'name' | 'email' | 'password' | 'phone', string>>>({});
+  const [errors, setErrors] = useState<
+    Partial<Record<'name' | 'email' | 'password' | 'phone' | 'planType', string>>
+  >({});
   const [formError, setFormError] = useState<string | null>(null);
+  const [isRedirectingToCheckout, setIsRedirectingToCheckout] = useState(false);
+  const [isPostRegisterFlow, setIsPostRegisterFlow] = useState(false);
 
   useEffect(() => {
-    if (accessToken) {
+    if (accessToken && !isPostRegisterFlow) {
       router.replace('/dashboard');
     }
-  }, [accessToken, router]);
+  }, [accessToken, isPostRegisterFlow, router]);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -58,15 +66,38 @@ export default function RegisterPage() {
         name: fieldErrors.name?.[0],
         email: fieldErrors.email?.[0],
         password: fieldErrors.password?.[0],
+        planType: fieldErrors.planType?.[0],
         phone: fieldErrors.phone?.[0]
       });
       return;
     }
 
+    let accountCreated = false;
+
     try {
+      setIsPostRegisterFlow(true);
       await registerMutation.mutateAsync(parsed.data);
-      router.replace('/dashboard');
+      accountCreated = true;
+
+      if (parsed.data.planType === 'FREE') {
+        router.replace('/dashboard');
+        return;
+      }
+
+      setIsRedirectingToCheckout(true);
+      const checkoutResponse = await api.post<BillingUrlResponse>('/billing/checkout', {
+        planType: parsed.data.planType
+      });
+
+      window.location.href = checkoutResponse.data.url;
     } catch (error) {
+      if (accountCreated) {
+        router.replace('/settings');
+        return;
+      }
+
+      setIsPostRegisterFlow(false);
+      setIsRedirectingToCheckout(false);
       setFormError(getErrorMessage(error, 'Não foi possível criar sua conta agora.'));
     }
   };
@@ -138,12 +169,56 @@ export default function RegisterPage() {
           {errors.password ? <p className="text-xs text-danger">{errors.password}</p> : null}
         </div>
 
+        <div className="grid gap-2">
+          <Label>Plano</Label>
+          <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
+            <Button
+              type="button"
+              variant={values.planType === 'FREE' ? 'secondary' : 'outline'}
+              className={values.planType === 'FREE' ? 'border-primary/50 bg-primary/18 text-primary-neon' : ''}
+              onClick={() => {
+                setValues((current) => ({ ...current, planType: 'FREE' }));
+                setErrors((current) => ({ ...current, planType: undefined }));
+              }}
+            >
+              Free
+            </Button>
+            <Button
+              type="button"
+              variant={values.planType === 'ESSENTIAL' ? 'secondary' : 'outline'}
+              className={values.planType === 'ESSENTIAL' ? 'border-primary/50 bg-primary/18 text-primary-neon' : ''}
+              onClick={() => {
+                setValues((current) => ({ ...current, planType: 'ESSENTIAL' }));
+                setErrors((current) => ({ ...current, planType: undefined }));
+              }}
+            >
+              Essential
+            </Button>
+            <Button
+              type="button"
+              variant={values.planType === 'PREMIUM' ? 'secondary' : 'outline'}
+              className={values.planType === 'PREMIUM' ? 'border-primary/50 bg-primary/18 text-primary-neon' : ''}
+              onClick={() => {
+                setValues((current) => ({ ...current, planType: 'PREMIUM' }));
+                setErrors((current) => ({ ...current, planType: undefined }));
+              }}
+            >
+              Premium
+            </Button>
+          </div>
+          {errors.planType ? <p className="text-xs text-danger">{errors.planType}</p> : null}
+        </div>
+
         {formError ? (
           <p className="rounded-xl border border-danger/35 bg-danger/10 px-3 py-2 text-sm text-danger">{formError}</p>
         ) : null}
 
-        <Button className="w-full" disabled={registerMutation.isPending}>
-          {registerMutation.isPending ? 'Criando conta...' : 'Criar conta'}
+        <Button className="w-full" disabled={registerMutation.isPending || isRedirectingToCheckout}>
+          {registerMutation.isPending
+            ? 'Criando conta...'
+            : isRedirectingToCheckout
+              ? 'Redirecionando para pagamento...'
+              : 'Criar conta'}
         </Button>
       </form>
 

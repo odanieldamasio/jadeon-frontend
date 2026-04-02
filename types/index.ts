@@ -83,6 +83,10 @@ export interface BillingUrlResponse {
   url: string;
 }
 
+export interface CheckoutFlowValidationResponse {
+  valid: boolean;
+}
+
 export interface DashboardSummary {
   currentBalance: number;
   monthIncome: number;

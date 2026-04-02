@@ -2,7 +2,12 @@
 
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { api } from '@/lib/api';
-import type { BillingUrlResponse, PlanType, User } from '@/types';
+import type {
+  BillingUrlResponse,
+  CheckoutFlowValidationResponse,
+  PlanType,
+  User
+} from '@/types';
 
 export function useUserProfile() {
   return useQuery({
@@ -29,6 +34,22 @@ export function useCreatePortal() {
   return useMutation({
     mutationFn: async () => {
       const response = await api.post<BillingUrlResponse>('/billing/portal');
+      return response.data;
+    }
+  });
+}
+
+export function useValidateCheckoutFlow() {
+  return useMutation({
+    mutationFn: async (payload: {
+      flowToken: string;
+      sessionId?: string;
+      outcome: 'success' | 'cancel';
+    }) => {
+      const response = await api.post<CheckoutFlowValidationResponse>(
+        '/billing/checkout/validate-flow',
+        payload
+      );
       return response.data;
     }
   });
