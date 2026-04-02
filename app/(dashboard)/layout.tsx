@@ -1,6 +1,7 @@
 'use client';
 
-import { BarChart3, LogOut, Menu, Plus, X } from 'lucide-react';
+import { LogOut, Menu, Plus, X } from 'lucide-react';
+import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
@@ -80,10 +81,7 @@ export default function DashboardLayout({
         <header className="sticky top-0 z-40 border-b border-border/80 bg-background/85 px-4 py-3 backdrop-blur-xl lg:hidden">
           <div className="flex items-center justify-between">
             <Link href="/dashboard" className="flex items-center gap-2.5">
-              <span className="flex h-10 w-10 items-center justify-center rounded-2xl border border-primary/40 bg-[linear-gradient(135deg,#22C55E_0%,#4ADE80_50%,#86EFAC_100%)] text-[#04110a] shadow-green-glow">
-                <BarChart3 className="h-5 w-5" />
-              </span>
-              <span className="text-sm font-semibold uppercase tracking-[0.16em] text-primary-neon">Jadeon</span>
+              <Image src="/jadeon-logo.svg" alt="Jadeon" width={65} height={37} className="h-auto w-[65px]" priority />
             </Link>
 
             <button

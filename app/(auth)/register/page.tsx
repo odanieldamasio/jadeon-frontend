@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
@@ -70,7 +71,9 @@ export default function RegisterPage() {
   return (
     <section className="space-y-6">
       <header className="space-y-2 text-center">
-        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary-neon">Jadeon</p>
+        <div className="mx-auto w-fit rounded-2xl border border-border bg-card/70 px-2.5 py-2">
+          <Image src="/jadeon-logo.svg" alt="Jadeon" width={94} height={39} className="h-auto w-[94px]" priority />
+        </div>
         <h1 className="text-3xl font-bold tracking-tight text-gradient-primary">Criar conta</h1>
         <p className="text-sm text-muted-foreground">Comece a organizar seu caixa em um painel único.</p>
       </header>

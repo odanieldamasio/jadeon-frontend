@@ -216,7 +216,7 @@ export default function TransactionsPage() {
               variant={filters.type === 'INCOME' ? 'secondary' : 'outline'}
               className={
                 filters.type === 'INCOME'
-                  ? 'border-success/55 bg-success/18 text-success hover:border-success/70'
+                  ? 'border-success bg-success/30 text-success shadow-[0_0_0_1px_rgba(34,197,94,0.45),0_16px_34px_-22px_rgba(34,197,94,0.75)]'
                   : 'border-success/35 text-success hover:border-success/55'
               }
               onClick={() => updateFilter('type', filters.type === 'INCOME' ? '' : 'INCOME')}
@@ -228,7 +228,7 @@ export default function TransactionsPage() {
               variant={filters.type === 'EXPENSE' ? 'secondary' : 'outline'}
               className={
                 filters.type === 'EXPENSE'
-                  ? 'border-danger/55 bg-danger/18 text-danger hover:border-danger/70'
+                  ? 'border-danger bg-danger/28 text-danger shadow-[0_0_0_1px_rgba(239,68,68,0.4),0_16px_34px_-22px_rgba(239,68,68,0.7)]'
                   : 'border-danger/35 text-danger hover:border-danger/55'
               }
               onClick={() => updateFilter('type', filters.type === 'EXPENSE' ? '' : 'EXPENSE')}

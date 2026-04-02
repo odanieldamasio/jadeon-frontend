@@ -3,7 +3,11 @@ export function parseAmount(value: string | number): number {
     return value;
   }
 
-  const normalized = value.trim().replace(/\s+/g, '');
+  const normalized = value
+    .trim()
+    .replace(/\s+/g, '')
+    .replace(/[R$r$\u00A0]/g, '')
+    .replace(/[^0-9,.\-]/g, '');
 
   if (/^-?\d+(\.\d+)?$/.test(normalized)) {
     const parsed = Number(normalized);
@@ -12,6 +16,32 @@ export function parseAmount(value: string | number): number {
 
   const parsed = Number(normalized.replace(/\./g, '').replace(',', '.'));
   return Number.isFinite(parsed) ? parsed : 0;
+}
+
+export function formatCurrencyInput(value: string | number): string {
+  const amount = typeof value === 'number' ? value : parseAmount(value);
+
+  if (!Number.isFinite(amount) || amount <= 0) {
+    return '';
+  }
+
+  return formatCurrency(amount);
+}
+
+export function maskCurrencyInput(rawValue: string): string {
+  const digits = rawValue.replace(/\D/g, '');
+
+  if (!digits) {
+    return '';
+  }
+
+  const value = Number(digits) / 100;
+
+  if (!Number.isFinite(value)) {
+    return '';
+  }
+
+  return formatCurrency(value);
 }
 
 export function formatCurrency(value: number): string {

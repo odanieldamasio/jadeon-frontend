@@ -20,11 +20,12 @@ import {
   normalizeBrDateInput,
   toBrDateInputValue
 } from '@/lib/utils/date';
+import { maskCurrencyInput, parseAmount } from '@/lib/utils/finance';
 import type { Category, CreateTransactionPayload, Transaction } from '@/types';
 
 const schema = z.object({
   type: z.enum(['INCOME', 'EXPENSE']),
-  amount: z.coerce.number().positive('Valor deve ser maior que zero'),
+  amount: z.string().refine((value) => parseAmount(value) > 0, 'Valor deve ser maior que zero'),
   description: z.string().trim().min(2, 'Descrição obrigatória'),
   date: z.string().refine((value) => isValidBrDateInput(value), 'Data inválida (dd/mm/aaaa)'),
   categoryId: z.string().min(1, 'Categoria obrigatória')
@@ -76,7 +77,7 @@ export function TransactionForm({
     if (transaction) {
       setValues({
         type: transaction.type,
-        amount: String(transaction.amount),
+        amount: maskCurrencyInput(String(transaction.amount)),
         description: transaction.description,
         date: toBrDateInputValue(transaction.date),
         categoryId: transaction.categoryId
@@ -115,7 +116,7 @@ export function TransactionForm({
 
     await onSubmit({
       type: parsed.data.type,
-      amount: Number(parsed.data.amount),
+      amount: parseAmount(parsed.data.amount),
       description: parsed.data.description,
       date: fromBrDateInputValue(parsed.data.date),
       categoryId: parsed.data.categoryId,
@@ -142,7 +143,7 @@ export function TransactionForm({
                 variant={values.type === 'INCOME' ? 'secondary' : 'outline'}
                 className={
                   values.type === 'INCOME'
-                    ? 'border-success/55 bg-success/18 text-success hover:border-success/70'
+                    ? 'border-success bg-success/30 text-success shadow-[0_0_0_1px_rgba(34,197,94,0.45),0_16px_34px_-22px_rgba(34,197,94,0.75)]'
                     : 'border-success/35 text-success hover:border-success/55'
                 }
                 onClick={() => updateField('type', 'INCOME')}
@@ -154,7 +155,7 @@ export function TransactionForm({
                 variant={values.type === 'EXPENSE' ? 'secondary' : 'outline'}
                 className={
                   values.type === 'EXPENSE'
-                    ? 'border-danger/55 bg-danger/18 text-danger hover:border-danger/70'
+                    ? 'border-danger bg-danger/28 text-danger shadow-[0_0_0_1px_rgba(239,68,68,0.4),0_16px_34px_-22px_rgba(239,68,68,0.7)]'
                     : 'border-danger/35 text-danger hover:border-danger/55'
                 }
                 onClick={() => updateField('type', 'EXPENSE')}
@@ -169,10 +170,10 @@ export function TransactionForm({
             <Label htmlFor="amount">Valor</Label>
             <Input
               id="amount"
-              inputMode="decimal"
-              placeholder="0.00"
+              inputMode="numeric"
+              placeholder="R$ 0,00"
               value={values.amount}
-              onChange={(event) => updateField('amount', event.target.value)}
+              onChange={(event) => updateField('amount', maskCurrencyInput(event.target.value))}
             />
             {errors.amount ? <p className="text-xs text-danger/95">{errors.amount}</p> : null}
           </div>

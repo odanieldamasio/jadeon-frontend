@@ -1,8 +1,9 @@
 'use client';
 
+import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { BarChart3, FolderKanban, LayoutDashboard, Settings, Wallet } from 'lucide-react';
+import { FolderKanban, LayoutDashboard, Settings, Wallet } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const navigation = [
@@ -33,14 +34,15 @@ export function Sidebar() {
 
   return (
     <aside className="sticky top-0 flex h-screen flex-col border-r border-border/85 bg-background/80 p-5 backdrop-blur-xl">
-      <div className="mb-8 flex items-center gap-3 rounded-3xl border border-border bg-card/80 px-3 py-3 shadow-soft">
-        <div className="flex h-11 w-11 items-center justify-center rounded-2xl border border-primary/40 bg-[linear-gradient(135deg,#22C55E_0%,#4ADE80_50%,#86EFAC_100%)] text-[#04110a] shadow-green-glow">
-          <BarChart3 className="h-5 w-5" />
-        </div>
-        <div>
-          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-primary-neon">Jadeon</p>
-          <h1 className="text-lg font-bold tracking-tight text-foreground">MEI Console</h1>
-        </div>
+      <div className="mb-8 px-3 py-2.5">
+        <Image
+          src="/jadeon-logo.svg"
+          alt="Jadeon"
+          width={65}
+          height={41}
+          className="h-auto w-[65px]"
+          priority
+        />
       </div>
 
       <nav className="space-y-2">
