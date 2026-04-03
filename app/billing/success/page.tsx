@@ -1,18 +1,16 @@
 'use client';
 
 import Link from 'next/link';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import { CheckCircle2, Settings, LayoutDashboard } from 'lucide-react';
-import { useEffect, useRef, useState } from 'react';
+import { Suspense, useEffect, useRef } from 'react';
 import { buttonVariants } from '@/components/ui/button';
 import { useValidateCheckoutFlow } from '@/lib/hooks/use-user';
 import { cn } from '@/lib/utils';
 
-export default function BillingSuccessPage() {
-  const router = useRouter();
+function BillingSuccessContent() {
   const searchParams = useSearchParams();
   const validateCheckoutFlow = useValidateCheckoutFlow();
-  const [isValidated, setIsValidated] = useState(false);
   const hasStartedValidation = useRef(false);
   const flowToken = searchParams.get('flowToken');
   const sessionId = searchParams.get('session_id');
@@ -24,27 +22,22 @@ export default function BillingSuccessPage() {
     hasStartedValidation.current = true;
 
     if (!flowToken || !sessionId) {
-      router.replace('/dashboard');
       return;
     }
 
-    validateCheckoutFlow
-      .mutateAsync({
+    validateCheckoutFlow.mutate(
+      {
         flowToken,
         sessionId,
         outcome: 'success'
-      })
-      .then(() => {
-        setIsValidated(true);
-      })
-      .catch(() => {
-        router.replace('/dashboard');
-      });
-  }, [flowToken, router, sessionId, validateCheckoutFlow]);
-
-  if (!isValidated) {
-    return null;
-  }
+      },
+      {
+        onError: () => {
+          // Validation is best-effort and should not block this public page.
+        }
+      }
+    );
+  }, [flowToken, sessionId, validateCheckoutFlow]);
 
   return (
     <main className="relative flex min-h-screen items-center justify-center overflow-hidden bg-background p-6">
@@ -76,5 +69,13 @@ export default function BillingSuccessPage() {
         </div>
       </section>
     </main>
+  );
+}
+
+export default function BillingSuccessPage() {
+  return (
+    <Suspense fallback={null}>
+      <BillingSuccessContent />
+    </Suspense>
   );
 }

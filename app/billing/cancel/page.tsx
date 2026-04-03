@@ -1,18 +1,16 @@
 'use client';
 
 import Link from 'next/link';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import { CircleX, RefreshCw, Settings } from 'lucide-react';
-import { useEffect, useRef, useState } from 'react';
+import { Suspense, useEffect, useRef } from 'react';
 import { buttonVariants } from '@/components/ui/button';
 import { useValidateCheckoutFlow } from '@/lib/hooks/use-user';
 import { cn } from '@/lib/utils';
 
-export default function BillingCancelPage() {
-  const router = useRouter();
+function BillingCancelContent() {
   const searchParams = useSearchParams();
   const validateCheckoutFlow = useValidateCheckoutFlow();
-  const [isValidated, setIsValidated] = useState(false);
   const hasStartedValidation = useRef(false);
   const flowToken = searchParams.get('flowToken');
 
@@ -23,26 +21,21 @@ export default function BillingCancelPage() {
     hasStartedValidation.current = true;
 
     if (!flowToken) {
-      router.replace('/dashboard');
       return;
     }
 
-    validateCheckoutFlow
-      .mutateAsync({
+    validateCheckoutFlow.mutate(
+      {
         flowToken,
         outcome: 'cancel'
-      })
-      .then(() => {
-        setIsValidated(true);
-      })
-      .catch(() => {
-        router.replace('/dashboard');
-      });
-  }, [flowToken, router, validateCheckoutFlow]);
-
-  if (!isValidated) {
-    return null;
-  }
+      },
+      {
+        onError: () => {
+          // Validation is best-effort and should not block this public page.
+        }
+      }
+    );
+  }, [flowToken, validateCheckoutFlow]);
 
   return (
     <main className="relative flex min-h-screen items-center justify-center overflow-hidden bg-background p-6">
@@ -74,5 +67,13 @@ export default function BillingCancelPage() {
         </div>
       </section>
     </main>
+  );
+}
+
+export default function BillingCancelPage() {
+  return (
+    <Suspense fallback={null}>
+      <BillingCancelContent />
+    </Suspense>
   );
 }
